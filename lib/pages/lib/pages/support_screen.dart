@@ -29,7 +29,7 @@ class SupportScreen extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.email, color: Colors.teal),
               title: Text("Email"),
-              subtitle: Text("support@dumaguetememorial.com"),
+              subtitle: Text("dumaguetememorialpark@gmail.com"),
             ),
           ),
           Card(

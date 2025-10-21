@@ -1,0 +1,10 @@
+{
+  // Prevent the YAML extension from attempting to download schemas from schemastore.org
+  "yaml.schemaDownload.enable": false,
+
+  // Map pubspec.yaml to the official pubspec schema on schemastore; since downloads are disabled
+  // the editor will rely on the bundled or cached schema and won't attempt a network fetch.
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/dart-lang/pub/master/doc/pubspec.schema.json": ["/pubspec.yaml"]
+  }
+}

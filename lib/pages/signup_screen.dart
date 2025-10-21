@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart'; // ✅ Import your LoginScreen
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -35,7 +36,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _signIn() {
-    Navigator.pop(context); // balik sa LoginScreen
+    // ✅ Navigate to LoginScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 
   @override
@@ -157,7 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Sign In
+                  // Sign In text
                   GestureDetector(
                     onTap: _signIn,
                     child: const Text.rich(

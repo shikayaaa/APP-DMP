@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'pages/login_screen.dart';
+
+import 'landing/landingpage_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const LoginScreen(), // ✅ Start with login
+      home: const LandingPage(), // Landing page shows first
     );
   }
 }

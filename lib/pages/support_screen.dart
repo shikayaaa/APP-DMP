@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // ✅ Added for opening map links
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
+
+  // ✅ Function to launch the map link
+  Future<void> _openMap() async {
+    final Uri mapUrl = Uri.parse('https://maps.app.goo.gl/fUyhiDi9hcVRsW817');
+    if (!await launchUrl(mapUrl, mode: LaunchMode.externalApplication)) {
+      throw 'Could not open the map link';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,7 @@ class SupportScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 18, 186, 153),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
@@ -20,14 +29,14 @@ class SupportScreen extends StatelessWidget {
             Text(
               "Support",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               "We're here to help you",
-              style: TextStyle(color: Colors.white70, fontSize: 12),
+              style: TextStyle(color: Colors.black87, fontSize: 12),
             ),
           ],
         ),
@@ -37,11 +46,10 @@ class SupportScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Contact Us Header
             const Text(
               "Contact Us",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -86,10 +94,6 @@ class SupportScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 12),
-
-            
-
             const SizedBox(height: 20),
 
             // Office Hours Card
@@ -104,27 +108,28 @@ class SupportScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [
-                        const Icon(
+                      children: const [
+                        Icon(
                           Icons.access_time,
                           color: Color(0xFF00695C),
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
-                        const Text(
+                        SizedBox(width: 8),
+                        Text(
                           "Office Hours",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     _buildOfficeHourRow("Monday - Friday", "8:00 AM - 5:00 PM"),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     _buildOfficeHourRow("Saturday", "Closed"),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     _buildOfficeHourRow("Sunday", "Closed"),
                   ],
                 ),
@@ -157,36 +162,38 @@ class SupportScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
+                    SizedBox(height: 12),
+                    Text(
                       "Dumaguete Memorial Park",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
+                        color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       "San Jose Ext., Taboan, Dumaguete City",
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.black87,
                       ),
                     ),
-                    const Text(
+                    Text(
                       "Negros Oriental, Philippines",
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
-                    // ✅ Expanded View Map Button
+                    // ✅ View Map Button (now opens Google Maps link)
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -201,14 +208,13 @@ class SupportScreen extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Opening map...")),
-                          );
-                        },
+                        onPressed: _openMap, // ✅ Opens Google Maps
                         child: const Text(
                           "View Map",
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -222,7 +228,7 @@ class SupportScreen extends StatelessWidget {
     );
   }
 
-  // Reusable Contact Card
+  // Reusable Contact Card Widget
   Widget _buildContactCard({
     required BuildContext context,
     required IconData icon,
@@ -263,9 +269,10 @@ class SupportScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
+                          color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         subtitle,
                         style: const TextStyle(
@@ -273,7 +280,7 @@ class SupportScreen extends StatelessWidget {
                           fontSize: 12,
                         ),
                       ),
-                      const SizedBox(height: 3),
+                      SizedBox(height: 3),
                       Text(
                         contact,
                         style: const TextStyle(

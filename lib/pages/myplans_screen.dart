@@ -144,13 +144,13 @@ class MyPlansScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
+                        color: const Color.fromARGB(255, 4, 4, 4),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.blue.shade100,
+                            backgroundColor: const Color.fromARGB(255, 13, 157, 167),
                             child: const Icon(Icons.calendar_today,
                                 color: Colors.blue),
                           ),

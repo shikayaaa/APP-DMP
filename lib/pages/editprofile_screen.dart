@@ -30,35 +30,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
-     appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153),
-  elevation: 0,
-  title: const Text(
-    "Edit Profile",
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold, // ✅ made bold
-    ),
-  ),
-  leading: IconButton(
-    icon: const Icon(Icons.arrow_back, color: Colors.white),
-    onPressed: () => Navigator.pop(context),
-  ),
-  bottom: const PreferredSize(
-    preferredSize: Size.fromHeight(28),
-    child: Padding(
-      padding: EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        "Update your personal information",
-        style: TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-          fontWeight: FontWeight.bold, // ✅ made bold
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        elevation: 0,
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(
+            color: Colors.black, // ✅ changed from white to black
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black), // ✅ black icon
+          onPressed: () => Navigator.pop(context),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(28),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Update your personal information",
+              style: TextStyle(
+                color: Colors.black, // ✅ changed from white70 to black
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
-    ),
-  ),
-     ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -73,19 +73,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: const Text(
                       "JD",
                       style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // ✅ changed from white to black
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  TextButton.icon(
-                    onPressed: () {
-                      // TODO: image picker
-                    },
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text("Tap to change profile picture"),
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -128,32 +122,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                  label: const Text("Cancel"),
+                  icon: const Icon(Icons.close, color: Colors.black), // ✅ black icon
+                  label: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.black), // ✅ black text
+                  ),
                 ),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 226, 237, 235),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   onPressed: () {
-                    // 👉 Show snackbar
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Changes Saved!")),
                     );
 
-                    // 👉 Return to ProfileScreen with updated data
                     Navigator.pop(context, {
                       "name": _nameController.text,
                       "email": _emailController.text,
@@ -166,8 +161,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       "bio": _bioController.text,
                     });
                   },
-                  icon: const Icon(Icons.save),
-                  label: const Text("Save Changes"),
+                  icon: const Icon(Icons.save, color: Colors.black), // ✅ black icon
+                  label: const Text(
+                    "Save Changes",
+                    style: TextStyle(color: Colors.black), // ✅ black text
+                  ),
                 ),
               ],
             ),
@@ -191,9 +189,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
           const SizedBox(height: 12),
           ...children,
         ],
@@ -210,8 +210,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         controller: controller,
         maxLines: maxLines,
         keyboardType: keyboard,
+        style: const TextStyle(color: Colors.black), // ✅ black input text
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(color: Colors.black), // ✅ black label
           filled: true,
           fillColor: Colors.white,
           contentPadding:
@@ -230,9 +232,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
+        style: const TextStyle(color: Colors.black), // ✅ black text
         decoration: InputDecoration(
           labelText: label,
-          suffixIcon: const Icon(Icons.calendar_today),
+          labelStyle: const TextStyle(color: Colors.black), // ✅ black label
+          suffixIcon: const Icon(Icons.calendar_today, color: Colors.black), // ✅ black icon
           filled: true,
           fillColor: Colors.white,
           contentPadding:
@@ -250,8 +254,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             initialDate: DateTime.now(),
           );
           if (picked != null) {
-            controller.text =
-                "${picked.month}/${picked.day}/${picked.year}";
+            controller.text = "${picked.month}/${picked.day}/${picked.year}";
           }
         },
       ),

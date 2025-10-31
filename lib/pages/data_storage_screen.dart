@@ -168,7 +168,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
 
           // 🔹 Data Security Notice
           Card(
-            color: Colors.blue.shade50,
+            color: const Color.fromARGB(255, 93, 174, 172),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: const Padding(

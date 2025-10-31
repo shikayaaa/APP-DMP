@@ -20,7 +20,8 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182), // dark teal bg
+      backgroundColor:
+          const Color.fromARGB(255, 145, 189, 182), // dark teal bg
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 18, 186, 153),
         title: const Text("Security Settings"),
@@ -34,7 +35,8 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
             padding: EdgeInsets.only(bottom: 8.0),
             child: Text(
               "Protect your account and data",
-              style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 14),
+              style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255), fontSize: 14),
             ),
           ),
         ),
@@ -56,7 +58,10 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
                   borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () {},
-            child: const Text("Update Password"),
+            child: const Text(
+              "Update Password",
+              style: TextStyle(color: Colors.black), // 🔹 text black now
+            ),
           ),
 
           const SizedBox(height: 20),
@@ -104,12 +109,16 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
                       "Recovery email: john.doe@example.com\nRecovery phone: +63 912 345 6789"),
                   trailing: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 204, 215, 214),
+                      backgroundColor:
+                          const Color.fromARGB(255, 204, 215, 214),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {},
-                    child: const Text("Update Recovery Options"),
+                    child: const Text(
+                      "Update Recovery Options",
+                      style: TextStyle(color: Colors.black), // 🔹 text black now
+                    ),
                   ),
                 ),
               ],
@@ -178,9 +187,12 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
       child: TextField(
         controller: controller,
         obscureText: true,
+        style: const TextStyle(color: Colors.black), // 🔹 input text black
         decoration: InputDecoration(
           hintText: hint,
-          suffixIcon: const Icon(Icons.visibility_off),
+          hintStyle:
+              const TextStyle(color: Colors.black54), // 🔹 hint text blackish
+          suffixIcon: const Icon(Icons.visibility_off, color: Colors.black54),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),

@@ -31,7 +31,11 @@ class UpcomingScreen extends StatelessWidget {
             children: [
               const Text(
                 "Maria Santos Dela Cruz",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // ✅ changed to black
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -80,6 +84,7 @@ class UpcomingScreen extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
+                          color: Colors.black, // ✅ black
                         ),
                       ),
                       SizedBox(height: 4),
@@ -121,8 +126,9 @@ class UpcomingScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 105, 185, 177),
-                  foregroundColor: Colors.white,
+                  backgroundColor:
+                      const Color.fromARGB(255, 105, 185, 177),
+                  foregroundColor: Colors.black, // ✅ text now black
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -148,7 +154,7 @@ class IntermentRequirementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.grey[200], // ✅ light background instead of dark
       body: Center(
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -158,9 +164,9 @@ class IntermentRequirementsScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
@@ -169,7 +175,8 @@ class IntermentRequirementsScreen extends StatelessWidget {
             children: [
               // Header
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: const BoxDecoration(
                   color: Color(0xFF0F5257),
                   borderRadius: BorderRadius.only(
@@ -183,13 +190,14 @@ class IntermentRequirementsScreen extends StatelessWidget {
                     const Text(
                       'Interment Requirements',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black, // ✅ changed from white
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                      icon:
+                          const Icon(Icons.close, color: Colors.black, size: 20),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -210,13 +218,12 @@ class IntermentRequirementsScreen extends StatelessWidget {
                       Text(
                         'Please ensure you have the following documents ready for the interment service:',
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black87, // ✅ black
                           fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: 20),
 
-                      // Requirements List
                       const RequirementCard(
                         title: 'Death Certificate',
                         subtitle: 'Original copy from the civil registrar',
@@ -278,8 +285,8 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         ),
                         child: RichText(
                           text: TextSpan(
-                            style: TextStyle(
-                              color: Colors.grey[700],
+                            style: const TextStyle(
+                              color: Colors.black87, // ✅ black
                               fontSize: 13,
                               height: 1.5,
                             ),
@@ -289,7 +296,8 @@ class IntermentRequirementsScreen extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               TextSpan(
-                                text: 'Please bring original copies and one photocopy of each document. Arrive at least 30 minutes before the scheduled interment time.',
+                                text:
+                                    'Please bring original copies and one photocopy of each document. Arrive at least 30 minutes before the scheduled interment time.',
                               ),
                             ],
                           ),
@@ -298,7 +306,7 @@ class IntermentRequirementsScreen extends StatelessWidget {
 
                       const SizedBox(height: 20),
 
-                      // Close Button Only
+                      // Close Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -306,8 +314,9 @@ class IntermentRequirementsScreen extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            foregroundColor: Colors.grey[700],
+                            backgroundColor:
+                                const Color.fromARGB(255, 145, 189, 182),
+                            foregroundColor: Colors.black, // ✅ black text
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -365,11 +374,7 @@ class RequirementCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            color: iconColor,
-            size: 20,
-          ),
+          Icon(icon, color: iconColor, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

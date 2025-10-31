@@ -11,8 +11,6 @@ import 'services_screen.dart';
 import 'profile_screen.dart';
 import 'notifications_screen.dart'; // 🔹 Add this import
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -23,12 +21,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // 🔹 List of Screens for each BottomNavigationBar tab
   final List<Widget> _screens = [
     const HomeTab(),
     const PaymentsScreen(),
     const ServicesScreen(),
-    const ProfileScreen(), // Profile screen
+    const ProfileScreen(),
   ];
 
   void _onNavTapped(int index) {
@@ -58,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-/// 🔹 Extracted the "Home" content into its own widget
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
 
@@ -68,6 +64,7 @@ class HomeTab extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 18, 186, 153),
           borderRadius: BorderRadius.circular(16),
@@ -75,12 +72,12 @@ class HomeTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white, size: 28),
-            const SizedBox(height: 6),
+            Icon(icon, color: Colors.white, size: 34),
+            const SizedBox(height: 10),
             Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 13),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
           ],
         ),
@@ -91,7 +88,9 @@ class HomeTab extends StatelessWidget {
   Widget _buildRecentActivity(
       String title, String subtitle, IconData icon, Color color) {
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color.withOpacity(0.2),
@@ -105,161 +104,174 @@ class HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // 🔹 Limit content width for desktop view
+    final double contentWidth =
+        screenWidth > 1000 ? 800 : (screenWidth * 0.9); // fits nicely on desktop
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 145, 189, 182),
-     appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153),
-  elevation: 0,
-  title: const Text(
-    "Quick Menu",
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-  actions: [
-    Stack(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.notifications, color: Colors.white),
-          onPressed: () {
-            // 🔹 Navigate to NotificationsScreen
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificationsScreen(),
-              ),
-            );
-          },
-        ),
-        Positioned(
-          right: 8,
-          top: 8,
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
-            child: const Text(
-              "2",
-              style: TextStyle(fontSize: 10, color: Colors.white),
-            ),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Quick Menu",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ],
-    ),
-  ],
-),
-
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Quick Menu Grid
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              children: [
-                _buildQuickMenuItem(context, Icons.shopping_cart, "Buy a Lot",
-                    () {
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.white),
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const PriceListScreen(),
+                      builder: (context) => const NotificationsScreen(),
                     ),
                   );
-                }),
-                _buildQuickMenuItem(context, Icons.folder_copy, "My Lots", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyPlansScreen(),
-                    ),
-                  );
-                }),
-                _buildQuickMenuItem(
-                    context, Icons.assignment, "Interment Request", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const IntermentRequestScreen(),
-                    ),
-                  );
-                }),
-                _buildQuickMenuItem(
-                    context, Icons.menu_book, "Notices & Guidelines", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NoticesScreen(),
-                    ),
-                  );
-                }),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // Contact & Support Button
-            Center(
-              child: SizedBox(
-                width: 300,
-                height: 100,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 18, 186, 153),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                },
+              ),
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ContactSupportScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.support_agent,
-                      color: Colors.white, size: 36),
-                  label: const Text(
-                    "Contact & Support",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  child: const Text(
+                    "2",
+                    style: TextStyle(fontSize: 10, color: Colors.white),
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
+        ],
+      ),
 
-            const SizedBox(height: 20),
+      // 🔹 Centered responsive layout for desktop
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: contentWidth),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // 🔹 Quick Menu Grid
+                GridView.count(
+                  crossAxisCount: screenWidth > 900 ? 4 : 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 14,
+                  crossAxisSpacing: 14,
+                  childAspectRatio: 1.2, // ✅ balanced size for desktop
+                  children: [
+                    _buildQuickMenuItem(
+                        context, Icons.shopping_cart, "Buy a Lot", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PriceListScreen(),
+                        ),
+                      );
+                    }),
+                    _buildQuickMenuItem(context, Icons.folder_copy, "My Lots",
+                        () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyPlansScreen(),
+                        ),
+                      );
+                    }),
+                    _buildQuickMenuItem(
+                        context, Icons.assignment, "Interment Request", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const IntermentRequestScreen(),
+                        ),
+                      );
+                    }),
+                    _buildQuickMenuItem(context, Icons.menu_book,
+                        "Notices & Guidelines", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NoticesScreen(),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
 
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Recent Activity",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 12),
+                const SizedBox(height: 24),
 
-            _buildRecentActivity(
-              "Payment Successful",
-              "Feb 15, 2024 • ₱2,500",
-              Icons.check_circle,
-              Colors.green,
+                // 🔹 Contact & Support Button
+                SizedBox(
+                  width: 350,
+                  height: 90,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ContactSupportScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.support_agent,
+                        color: Colors.white, size: 36),
+                    label: const Text(
+                      "Contact & Support",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Recent Activity",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                _buildRecentActivity(
+                  "Payment Successful",
+                  "Feb 15, 2024 • ₱2,500",
+                  Icons.check_circle,
+                  Colors.green,
+                ),
+                _buildRecentActivity(
+                  "Payment Reminder",
+                  "Next due: March 15, 2024",
+                  Icons.alarm,
+                  Colors.blue,
+                ),
+              ],
             ),
-            _buildRecentActivity(
-              "Payment Reminder",
-              "Next due: March 15, 2024",
-              Icons.alarm,
-              Colors.blue,
-            ),
-          ],
+          ),
         ),
       ),
     );

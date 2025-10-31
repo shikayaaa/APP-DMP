@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'terms_of service_screen.dart';
 import 'privacypolicy_screen.dart';
 import 'data_privacy_compliance_screen.dart';
+
 class AppInfoScreen extends StatelessWidget {
   const AppInfoScreen({super.key});
 
@@ -46,8 +47,14 @@ class AppInfoScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           // 🔹 Key Features
-          const Text("Key Features",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Text(
+            "Key Features",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // ✅ Changed to black
+            ),
+          ),
           const SizedBox(height: 8),
           _buildFeature("Pre-need installment plan management"),
           _buildFeature("Secure payment processing (GCash, Maya, Bank Transfer)"),
@@ -58,8 +65,10 @@ class AppInfoScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           // 🔹 Legal & Privacy
-          const Text("Legal & Privacy",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Text(
+            "Legal & Privacy",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
 
           // ✅ Terms of Service
@@ -94,7 +103,7 @@ class AppInfoScreen extends StatelessWidget {
             },
           ),
 
-          // ✅ Data Privacy Act Compliance (Now Working!)
+          // ✅ Data Privacy Act Compliance
           _buildNavTile(
             context,
             title: "Data Privacy Act Compliance",
@@ -112,7 +121,7 @@ class AppInfoScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 🔹 Contact Information with width 50%
+          // 🔹 Contact Information (now black text)
           Align(
             alignment: Alignment.center,
             child: SizedBox(
@@ -130,14 +139,29 @@ class AppInfoScreen extends StatelessWidget {
                       Text(
                         "Contact Information",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black, // ✅ Changed to black
+                        ),
                       ),
                       SizedBox(height: 8),
-                      Text("Dumaguete Memorial Park & Crematory"),
-                      Text("Bagacay, Dumaguete City, Negros Oriental"),
+                      Text(
+                        "Dumaguete Memorial Park & Crematory",
+                        style: TextStyle(color: Colors.black), // ✅ black
+                      ),
+                      Text(
+                        "Bagacay, Dumaguete City, Negros Oriental",
+                        style: TextStyle(color: Colors.black), // ✅ black
+                      ),
                       SizedBox(height: 8),
-                      Text("Email: info@dumaguetememorial.com"),
-                      Text("Phone: (035) 422-XXXX"),
+                      Text(
+                        "Email: info@dumaguetememorial.com",
+                        style: TextStyle(color: Colors.black), // ✅ black
+                      ),
+                      Text(
+                        "Phone: (035) 422-XXXX",
+                        style: TextStyle(color: Colors.black), // ✅ black
+                      ),
                     ],
                   ),
                 ),
@@ -176,7 +200,10 @@ class AppInfoScreen extends StatelessWidget {
   static Widget _buildFeature(String text) {
     return ListTile(
       leading: const Icon(Icons.check_circle, color: Colors.green),
-      title: Text(text),
+      title: Text(
+        text,
+        style: const TextStyle(color: Colors.black), // ✅ changed to black
+      ),
     );
   }
 

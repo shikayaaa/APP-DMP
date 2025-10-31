@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // ✅ Add this import
 
 class ContactSupportScreen extends StatelessWidget {
   const ContactSupportScreen({super.key});
 
+  // ✅ Function to open Google Maps link
+  Future<void> _openMap() async {
+    final Uri url = Uri.parse("https://maps.app.goo.gl/fUyhiDi9hcVRsW817");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 149, 201, 195),
+      backgroundColor: const Color.fromARGB(255, 132, 192, 185),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 18, 186, 153),
         elevation: 0,
@@ -41,7 +52,7 @@ class ContactSupportScreen extends StatelessWidget {
             const Text(
               "Contact Us",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -86,9 +97,6 @@ class ContactSupportScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 12),
-
-        
             const SizedBox(height: 20),
 
             // Office Hours Card
@@ -103,18 +111,19 @@ class ContactSupportScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [
+                      children: const [
                         Icon(
                           Icons.access_time,
-                          color: const Color(0xFF00695C),
+                          color: Color(0xFF00695C),
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
-                        const Text(
+                        SizedBox(width: 8),
+                        Text(
                           "Office Hours",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
                       ],
@@ -144,18 +153,19 @@ class ContactSupportScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [
+                      children: const [
                         Icon(
                           Icons.location_on,
-                          color: const Color(0xFF00695C),
+                          color: Color(0xFF00695C),
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
-                        const Text(
+                        SizedBox(width: 8),
+                        Text(
                           "Visit Our Office",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
                       ],
@@ -166,6 +176,7 @@ class ContactSupportScreen extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -184,24 +195,31 @@ class ContactSupportScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF00695C),
-                        side: const BorderSide(
-                          color: Color(0xFF00695C),
-                          width: 1.8,
+
+                    // ✅ Opens Google Maps when pressed
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF00695C),
+                          side: const BorderSide(
+                            color: Color(0xFF00695C),
+                            width: 1.8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        onPressed: _openMap, // ✅ Opens map link
+                        child: const Text(
+                          "View Map",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Opening map...")),
-                        );
-                      },
-                      child: const Text("View Map"),
                     ),
                   ],
                 ),
@@ -253,6 +271,7 @@ class ContactSupportScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 2),

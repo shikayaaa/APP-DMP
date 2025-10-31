@@ -23,7 +23,8 @@ class _PreNeedAgreementScreenState extends State<PreNeedAgreementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 174, 212, 210),
+      // ✅ Background color changed to pure white
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 18, 186, 153),
         elevation: 0,
@@ -76,6 +77,7 @@ class _PreNeedAgreementScreenState extends State<PreNeedAgreementScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
+                // ✅ Container remains white
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -202,6 +204,9 @@ class _PreNeedAgreementScreenState extends State<PreNeedAgreementScreen> {
           ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          // ✅ White background inside input fields
+          filled: true,
+          fillColor: Colors.white,
         ),
       ),
     );
@@ -224,6 +229,9 @@ class _PreNeedAgreementScreenState extends State<PreNeedAgreementScreen> {
           ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          // ✅ White background inside dropdown
+          filled: true,
+          fillColor: Colors.white,
         ),
         items: items
             .map((e) => DropdownMenuItem(value: e, child: Text(e)))

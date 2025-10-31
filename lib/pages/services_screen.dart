@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'contact_support_screen.dart';  // ✅ For the button
-   // ✅ For memorial services
 import 'pricelist_screen.dart';
 import 'intermentrequest_screen.dart';
 import 'request_screen.dart';
@@ -21,11 +20,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 145, 189, 182),
       appBar: AppBar(
+         automaticallyImplyLeading: false, // ✅ removes back button
         backgroundColor: const Color.fromARGB(255, 18, 186, 153),
         elevation: 0,
         title: const Text(
           "Services",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black), // ✅ changed to black
         ),
       ),
 
@@ -68,7 +68,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
         backgroundColor: isSelected
             ? const Color.fromARGB(255, 35, 85, 81)
             : Colors.white,
-        foregroundColor: isSelected ? Colors.white : Colors.black,
+        foregroundColor: isSelected ? Colors.black : Colors.black, // ✅ always black text
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -134,11 +134,15 @@ class _ServicesScreenState extends State<ServicesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black), // ✅ black
+          ),
           const SizedBox(height: 6),
-          Text(description,
-              style: const TextStyle(color: Color.fromARGB(136, 0, 0, 0))),
+          Text(
+            description,
+            style: const TextStyle(color: Colors.black54), // ✅ black shade
+          ),
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
@@ -160,7 +164,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ContactSupportScreen(), // ✅ Navigate to LearnMoreScreen
+                    builder: (context) => const ContactSupportScreen(),
                   ),
                 );
               }
@@ -171,7 +175,10 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text(buttonText),
+            child: Text(
+              buttonText,
+              style: const TextStyle(color: Colors.black), // ✅ black button text
+            ),
           ),
         ],
       ),

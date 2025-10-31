@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'editprofile_screen.dart';
 import 'settings_screen.dart';
-import 'login_screen.dart'; // 👈 add this
+import 'login_screen.dart'; // 👈 added import
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,30 +10,31 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 145, 189, 182), // light background
-     appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153), // dark green
-  elevation: 0,
-  title: const Text(
-    "Profile",
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold, // ✅ made bold
-    ),
-  ),
-  bottom: const PreferredSize(
-    preferredSize: Size.fromHeight(28),
-    child: Padding(
-      padding: EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        "Manage your account settings",
-        style: TextStyle(
-          color: Color.fromARGB(255, 255, 255, 255),
-          fontSize: 14,
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 18, 186, 153), // dark green
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Profile",
+          style: TextStyle(
+            color: Colors.black, // ✅ changed from white to black
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(28),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Manage your account settings",
+              style: TextStyle(
+                color: Colors.black, // ✅ changed from white to black
+                fontSize: 14,
+              ),
+            ),
+          ),
         ),
       ),
-    ),
-  ),
-),
 
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -53,9 +54,10 @@ class ProfileScreen extends StatelessWidget {
                   child: const Text(
                     "JD",
                     style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                      fontSize: 20,
+                      color: Colors.black, // ✅ changed from white to black
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -63,14 +65,23 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text("John Doe",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        "John Doe",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
                       SizedBox(height: 4),
-                      Text("john.doe@example.com",
-                          style: TextStyle(color: Colors.black54)),
-                      Text("+63 912 345 6789",
-                          style: TextStyle(color: Colors.black54)),
+                      Text(
+                        "john.doe@example.com",
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      Text(
+                        "+63 912 345 6789",
+                        style: TextStyle(color: Colors.black54),
+                      ),
                     ],
                   ),
                 ),
@@ -99,10 +110,8 @@ class ProfileScreen extends StatelessWidget {
           _sectionTitle("Contact Information"),
           _contactTile(Icons.email, "john.doe@example.com", "Email Address"),
           _contactTile(Icons.phone, "+63 912 345 6789", "Phone Number"),
-          _contactTile(Icons.location_on, "Dumaguete City, Negros Oriental",
-              "Address"),
-          _contactTile(Icons.calendar_today, "Member since January 2024",
-              "Account Created"),
+          _contactTile(Icons.location_on, "Dumaguete City, Negros Oriental", "Address"),
+          _contactTile(Icons.calendar_today, "Member since January 2024", "Account Created"),
 
           const SizedBox(height: 16),
 
@@ -115,9 +124,7 @@ class ProfileScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const EditProfileScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
               );
             },
           ),
@@ -129,13 +136,10 @@ class ProfileScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
             },
           ),
-         
 
           const SizedBox(height: 8),
 
@@ -148,17 +152,22 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text("Sign Out",
-                  style: TextStyle(
-                      color: Colors.red, fontWeight: FontWeight.bold)),
-              subtitle: const Text("Sign out of your account"),
+              title: const Text(
+                "Sign Out",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: const Text(
+                "Sign out of your account",
+                style: TextStyle(color: Colors.black), // ✅ black text
+              ),
               onTap: () {
                 // ✅ Sign out: clear all routes and go back to login
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                   (Route<dynamic> route) => false,
                 );
               },
@@ -172,7 +181,7 @@ class ProfileScreen extends StatelessWidget {
             child: Text(
               "Dumaguete Memorial Park v1.0.0\n© 2024 All rights reserved",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54, fontSize: 12),
+              style: TextStyle(color: Colors.black, fontSize: 12), // ✅ changed to black
             ),
           ),
         ],
@@ -180,7 +189,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 Info card
+  // 🔹 Info Card
   Widget _infoCard(String value, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -190,11 +199,19 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // ✅ black
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(label, style: const TextStyle(color: Colors.black54)),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.black54),
+          ),
         ],
       ),
     );
@@ -204,8 +221,14 @@ class ProfileScreen extends StatelessWidget {
   Widget _sectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Text(title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black, // ✅ black
+        ),
+      ),
     );
   }
 
@@ -219,16 +242,26 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.teal),
-        title: Text(value),
-        subtitle: Text(label),
+        title: Text(
+          value,
+          style: const TextStyle(color: Colors.black), // ✅ black
+        ),
+        subtitle: Text(
+          label,
+          style: const TextStyle(color: Colors.black54), // ✅ black
+        ),
       ),
     );
   }
 
   // 🔹 Action Tile
-  Widget _actionTile(BuildContext context, IconData icon, String title,
-      String subtitle,
-      {VoidCallback? onTap}) {
+  Widget _actionTile(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle, {
+    VoidCallback? onTap,
+  }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
@@ -237,9 +270,15 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.teal),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        title: Text(
+          title,
+          style: const TextStyle(color: Colors.black), // ✅ black
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.black54), // ✅ black
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
         onTap: onTap,
       ),
     );

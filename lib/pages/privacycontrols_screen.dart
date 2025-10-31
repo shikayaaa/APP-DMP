@@ -60,23 +60,7 @@ class PrivacyControlsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color.fromARGB(255, 11, 61, 53),
-              side: const BorderSide(color: Color.fromARGB(255, 6, 71, 60)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            onPressed: () {
-              // TODO: Navigate to Support Screen
-            },
-            child: const Text(
-              "Contact Support for More Info",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
+         
         ],
       ),
     );

@@ -10,22 +10,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.1   # ✅ moved to correct level (same indent as cupertino_icons)
 
   # --- UI & Utility Packages ---
   cupertino_icons: ^1.0.8
   file_picker: ^8.0.0        # For choosing files
   url_launcher: ^6.3.1       # For links, calls, maps, etc.
-  pdf: ^3.10.8              # ✅ Add this
-  path_provider: ^2.1.4     # ✅ Add this
-  share_plus: ^10.0.2 
-
-      # For saving the PDF to device storage
+  pdf: ^3.10.8               # For generating PDFs
+  path_provider: ^2.1.4      # For saving the PDF to device storage
+  share_plus: ^10.0.2        # For sharing files and links
+  lucide_icons: ^0.257.0     # For Lucide icon set
+  flutter_animate: ^4.5.0    # ✅ For animations (used in ContactSection)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  lucide_icons: ^0.257.0
 
 flutter:
   uses-material-design: true
@@ -35,3 +35,8 @@ flutter:
     - assets/images/gate.jpg
     - assets/images/office.jpg
     - assets/dmplogofinal.png
+    - assets/images/lawn.jpg
+    - assets/images/memorialg.jpg
+    - assets/images/gardenfam.jpg
+    - assets/images/mausoleum.jpg
+    - assets/images/dmp.png

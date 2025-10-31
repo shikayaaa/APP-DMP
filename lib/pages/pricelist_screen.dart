@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pre_need_purchase_screen.dart';
 
-
 class PriceListScreen extends StatefulWidget {
   const PriceListScreen({super.key});
 
@@ -45,34 +44,34 @@ class _PriceListScreenState extends State<PriceListScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(title,
               style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
           const SizedBox(height: 12),
 
           // Price rows
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Lot Price"),
-            Text(lotPrice),
+            const Text("Lot Price", style: TextStyle(color: Colors.black)),
+            Text(lotPrice, style: const TextStyle(color: Colors.black)),
           ]),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Perpetual Care"),
-            Text(care),
+            const Text("Perpetual Care", style: TextStyle(color: Colors.black)),
+            Text(care, style: const TextStyle(color: Colors.black)),
           ]),
           const SizedBox(height: 6),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Total Price"),
+            const Text("Total Price", style: TextStyle(color: Colors.black)),
             Text(total,
                 style: const TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.teal)),
           ]),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Down Payment"),
-            Text(downPayment),
+            const Text("Down Payment", style: TextStyle(color: Colors.black)),
+            Text(downPayment, style: const TextStyle(color: Colors.black)),
           ]),
           const SizedBox(height: 16),
 
           // Installments
           const Text("Monthly Installment Options",
-              style: TextStyle(fontWeight: FontWeight.w600)),
+              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
           const SizedBox(height: 8),
 
           Row(
@@ -88,7 +87,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
 
           const SizedBox(height: 16),
 
-          // ✅ Fixed "View Details" button with navigation
+          // ✅ "Avail Plan" button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -112,8 +111,8 @@ class _PriceListScreenState extends State<PriceListScreen> {
                 );
               },
               child: const Text(
-                "View Details",
-                style: TextStyle(color: Colors.white),
+                "Avail Plan",
+                style: TextStyle(color: Colors.black), // changed from white → black
               ),
             ),
           )
@@ -122,10 +121,10 @@ class _PriceListScreenState extends State<PriceListScreen> {
     );
   }
 
-  // Content per category
+  // Category-specific content
   Widget _buildCategoryContent() {
     switch (_selectedCategory) {
-      case 0: // Lawn Area
+      case 0:
         return Column(children: [
           _buildLotCard(
             title: "Prime",
@@ -143,17 +142,41 @@ class _PriceListScreenState extends State<PriceListScreen> {
             title: "Special Premium",
             lotPrice: "₱76,543",
             care: "₱5,590",
-            total: "₱82,133",
+            total: "₱76,133",
             downPayment: "₱15,227",
             installments: [
               {"term": "12 mos", "price": "₱5,759", "total": "₱84,335"},
-              {"term": "36 mos", "price": "₱2,379", "total": "₱100,671"},
-              {"term": "60 mos", "price": "₱1,706", "total": "₱117,567"},
+              {"term": "36 mos", "price": "₱2,379", "total": "₱100,871"},
+              {"term": "60 mos", "price": "₱1,706", "total": "₱117,587"},
+            ],
+          ),
+          _buildLotCard(
+            title: "Premium",
+            lotPrice: "₱66,816",
+            care: "₱5,590",
+            total: "₱72,406",
+            downPayment: "₱14,482",
+            installments: [
+              {"term": "12 mos", "price": "₱5,477", "total": "₱80,266"},
+              {"term": "36 mos", "price": "₱2,262", "total": "₱95,914"},
+              {"term": "60 mos", "price": "₱1,622", "total": "₱111,802"},
+            ],
+          ),
+          _buildLotCard(
+            title: "Regular",
+            lotPrice: "₱63,888",
+            care: "₱5,590",
+            total: "₱69,478",
+            downPayment: "₱13,896",
+            installments: [
+              {"term": "12 mos", "price": "₱5,256", "total": "₱76,968"},
+              {"term": "36 mos", "price": "₱2,171", "total": "₱92,052"},
+              {"term": "60 mos", "price": "₱1,557", "total": "₱107,316"},
             ],
           ),
         ]);
 
-      case 1: // Memorial Garden
+      case 1:
         return Column(children: [
           _buildLotCard(
             title: "Special Premium",
@@ -179,9 +202,21 @@ class _PriceListScreenState extends State<PriceListScreen> {
               {"term": "60 mos", "price": "₱5,611", "total": ""},
             ],
           ),
+          _buildLotCard(
+            title: "Regular",
+            lotPrice: "₱292,820",
+            care: "₱13,976",
+            total: "₱306,796",
+            downPayment: "₱61,359",
+            installments: [
+              {"term": "12 mos", "price": "₱23,208", "total": "₱339,855"},
+              {"term": "36 mos", "price": "₱9,585", "total": "₱406,419"},
+              {"term": "60 mos", "price": "₱6,872", "total": "₱473,679"},
+            ],
+          ),
         ]);
 
-      case 2: // Garden Family
+      case 2:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -192,12 +227,11 @@ class _PriceListScreenState extends State<PriceListScreen> {
                 SizedBox(width: 6),
                 Text(
                   "Garden Family Estate",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-
             _buildLotCard(
               title: "Special Premium",
               lotPrice: "₱806,586",
@@ -225,7 +259,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
           ],
         );
 
-      case 3: // Family Estate
+      case 3:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -236,12 +270,11 @@ class _PriceListScreenState extends State<PriceListScreen> {
                 SizedBox(width: 6),
                 Text(
                   "Family Estate",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-
             _buildLotCard(
               title: "Premier Family Estate",
               lotPrice: "₱1,888,058",
@@ -278,21 +311,14 @@ class _PriceListScreenState extends State<PriceListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal.shade50,
-    appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153),
-  iconTheme: const IconThemeData(
-    color: Colors.white, // 👈 changes the back arrow color
-  ),
-  title: const Text(
-    "Price List",
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
-
-
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        iconTheme: const IconThemeData(color: Colors.black), // changed to black
+        title: const Text(
+          "Price List",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // changed
+        ),
+      ),
       body: Column(children: [
         // Category Tabs
         SingleChildScrollView(
@@ -356,7 +382,7 @@ class _InstallmentBox extends StatelessWidget {
         children: [
           Text(term,
               style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black)),
           Text(price, style: const TextStyle(color: Colors.teal)),
           if (total.isNotEmpty)
             Text("Total:\n$total",

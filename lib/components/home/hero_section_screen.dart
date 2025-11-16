@@ -51,7 +51,7 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
             child: Transform.translate(
               offset: Offset(0, scrollY * 0.4),
               child: Image.asset(
-                'assets/images/gate.jpg',
+                'assets/images/view.jpg',
                 fit: BoxFit.cover,
               ),
             ),
@@ -60,25 +60,7 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
           // --- Dark overlay for readability ---
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.45),
-            ),
-          ),
-
-          // --- Glowing Green Gradient Overlay ---
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  colors: [
-                    Color(0x8800FF9C),
-                    Color(0x5500B86B),
-                    Color(0x330B0B0D),
-                    Color(0xFF000000),
-                  ],
-                  center: Alignment(0.0, -0.3),
-                  radius: 1.2,
-                ),
-              ),
+              color: const Color.fromARGB(121, 70, 89, 143).withOpacity(0.55), // slightly darker overlay
             ),
           ),
 
@@ -94,11 +76,12 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Heading
                     Text(
                       'A Place of Peace,\nMemory, and Legacy',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 255, 255, 255),
+                        color: Colors.white,
                         fontSize: width > 1400
                             ? 60
                             : width > 1000
@@ -107,13 +90,6 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
                         fontWeight: FontWeight.bold,
                         height: 1.2,
                         letterSpacing: 1.2,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 12,
-                            color: Colors.black.withOpacity(0.6),
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
                       ),
                     )
                         .animate()
@@ -122,11 +98,12 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
 
                     const SizedBox(height: 25),
 
+                    // Subtitle
                     Text(
                       'Honoring lives with dignity and compassion\nin a serene sanctuary of remembrance',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         fontSize: width > 1400
                             ? 22
                             : width > 1000
@@ -142,14 +119,15 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
 
                     const SizedBox(height: 50),
 
+                    // Buttons
                     Wrap(
                       alignment: WrapAlignment.center,
                       spacing: 20,
                       children: [
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00FF9C),
-                            foregroundColor: Colors.black,
+                            backgroundColor: const Color(0xFF1E63CC), // simple blue
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 40, vertical: 18),
                             shape: RoundedRectangleBorder(
@@ -169,7 +147,7 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             side: const BorderSide(
-                                color: Color(0xFF00FF9C), width: 1.5),
+                                color: Color(0xFF1E63CC), width: 1.5), // blue border
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 40, vertical: 18),
                             shape: RoundedRectangleBorder(
@@ -204,7 +182,7 @@ class _HeroSectionScreenState extends State<HeroSectionScreen> {
             child: Center(
               child: Icon(
                 Icons.keyboard_arrow_down_rounded,
-                color: const Color(0xFF00FF9C),
+                color: Colors.white, // simple white
                 size: 48,
               )
                   .animate(onPlay: (c) => c.repeat())

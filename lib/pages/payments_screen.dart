@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'payment_screen.dart'; // <-- Payment screen
-import 'paymenthistory_screen.dart'; // <-- Payment history screen
+import 'payment_screen.dart';
+import 'paymenthistory_screen.dart';
 
 class PaymentsScreen extends StatelessWidget {
   const PaymentsScreen({super.key});
@@ -8,22 +8,22 @@ class PaymentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182),
+      backgroundColor: const Color(0xFFE8F0FF), // 🔵 light blue background
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color(0xFF0A6CFF), // 🔵 main blue
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
           "Payments & Receipts",
           style: TextStyle(color: Colors.white),
         ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(24),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(24),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: EdgeInsets.only(bottom: 8.0),
             child: Text(
               "Manage your payment history",
-              style: TextStyle(color: Color.fromARGB(255, 223, 226, 225)),
+              style: TextStyle(color: Colors.white70),
             ),
           ),
         ),
@@ -36,16 +36,15 @@ class PaymentsScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 73, 196, 176), // darker teal top
-              Color(0xFF00897B), // lighter teal bottom
+              Color(0xFF3A7BFF), // 🔵 darker blue top
+              Color(0xFF0A6CFF), // 🔵 lighter blue bottom
             ],
           ),
         ),
         child: Center(
-          // ✅ Centers and constrains width for desktop screens
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              maxWidth: 600, // ✅ Adjust this number (e.g. 550–700) for preferred size
+              maxWidth: 600,
             ),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -56,7 +55,7 @@ class PaymentsScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.teal.shade800,
+                      color: const Color(0xFF0046A3), // 🔵 dark blue
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -97,23 +96,34 @@ class PaymentsScreen extends StatelessWidget {
                           ),
                           child: Column(
                             children: const [
-                              Text("Next Due",
-                                  style: TextStyle(
-                                      color: Colors.teal, fontSize: 14)),
+                              Text(
+                                "Next Due",
+                                style: TextStyle(
+                                  color: Color(0xFF0A6CFF), // 🔵 heading blue
+                                  fontSize: 14,
+                                ),
+                              ),
                               SizedBox(height: 6),
-                              Text("₱2,500",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
+                              Text(
+                                "₱2,500",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 6),
-                              Text("2024-03-15",
-                                  style: TextStyle(color: Colors.black54)),
+                              Text(
+                                "2024-03-15",
+                                style: TextStyle(color: Colors.black54),
+                              ),
                             ],
                           ),
                         ),
                       ),
+
                       const SizedBox(width: 16),
+
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(16),
@@ -123,18 +133,27 @@ class PaymentsScreen extends StatelessWidget {
                           ),
                           child: Column(
                             children: const [
-                              Text("Total Paid",
-                                  style: TextStyle(
-                                      color: Colors.teal, fontSize: 14)),
+                              Text(
+                                "Total Paid",
+                                style: TextStyle(
+                                  color: Color(0xFF0A6CFF), // 🔵 heading blue
+                                  fontSize: 14,
+                                ),
+                              ),
                               SizedBox(height: 6),
-                              Text("₱25,000",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
+                              Text(
+                                "₱25,000",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 6),
-                              Text("10 payments",
-                                  style: TextStyle(color: Colors.black54)),
+                              Text(
+                                "10 payments",
+                                style: TextStyle(color: Colors.black54),
+                              ),
                             ],
                           ),
                         ),
@@ -144,13 +163,13 @@ class PaymentsScreen extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  // ✅ Pay Now Button (navigate to payment_screen.dart)
+                  // PAY NOW BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal.shade700,
+                        backgroundColor: const Color(0xFF0046A3), // 🔵 dark blue
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -173,15 +192,17 @@ class PaymentsScreen extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // ✅ View Payment History Button (navigate to paymenthistory_screen.dart)
+                  // HISTORY BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black,
+                        foregroundColor: const Color(0xFF0A6CFF), // 🔵 text blue
                         backgroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.grey),
+                        side: const BorderSide(
+                          color: Color(0xFF0A6CFF), // 🔵 border blue
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

@@ -27,13 +27,13 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
   @override
   Widget build(BuildContext context) {
     return Container(
-      // 💚 Background gradient
+      // 🔵 Background gradient simplified
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF001F1B),
-            Color(0xFF00382F),
-            Color(0xFF005F4E),
+            Color(0xFFE0F0FF),
+            Color(0xFFB0D8FF),
+            Color(0xFF80BFFF),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -67,21 +67,19 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                             borderRadius: BorderRadius.circular(20),
                             child: Stack(
                               children: [
-                                // ✅ Changed to use local asset image
                                 Image.asset(
                                   'assets/images/office.jpg',
                                   width: double.infinity,
                                   height: 400,
                                   fit: BoxFit.cover,
                                 ),
-                                // ✅ Retained gradient overlay
                                 Container(
                                   width: double.infinity,
                                   height: 400,
                                   decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        Color(0xCC00382F),
+                                        Color(0x99B0D8FF),
                                         Colors.transparent,
                                       ],
                                       begin: Alignment.bottomCenter,
@@ -104,8 +102,8 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF00FF9C),
-                                    Color(0xFF009E6D),
+                                    Color(0xFF4D9FFF),
+                                    Color(0xFF1E63CC),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(30),
@@ -130,8 +128,8 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFF00FF9C),
-                                Color(0xFF00B86B),
+                                Color(0xFF4D9FFF),
+                                Color(0xFF1E63CC),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(50),
@@ -139,7 +137,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                           child: const Text(
                             "About Us",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
                             ),
@@ -157,7 +155,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                             style: const TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Color(0xFF00204A),
                               height: 1.3,
                             ),
                             children: [
@@ -168,8 +166,8 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                                   foreground: Paint()
                                     ..shader = const LinearGradient(
                                       colors: [
-                                        Color(0xFF00FF9C),
-                                        Color(0xFF00B86B),
+                                        Color(0xFF4D9FFF),
+                                        Color(0xFF1E63CC),
                                       ],
                                     ).createShader(
                                         const Rect.fromLTWH(0, 0, 200, 70)),
@@ -185,7 +183,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
 
                         const SizedBox(height: 20),
 
-                        // Paragraphs
+                        // Paragraphs simplified color
                         const Text(
                           "Established in 1990, Dumaguete Memorial Park has been a sanctuary "
                           "of peace and remembrance for families in Negros Oriental. "
@@ -193,7 +191,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                           "for honoring loved ones.",
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white70,
+                            color: Colors.black87,
                             height: 1.6,
                           ),
                         )
@@ -211,7 +209,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                           "memorial is as special as the life it celebrates.",
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white70,
+                            color: Colors.black87,
                             height: 1.6,
                           ),
                         )
@@ -275,14 +273,14 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF00FF9C),
-                  Color(0xFF00B86B),
+                  Color(0xFF4D9FFF),
+                  Color(0xFF1E63CC),
                 ],
               ),
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
             padding: const EdgeInsets.all(10),
-            child: Icon(icon, color: Colors.black, size: 20),
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -293,7 +291,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                   title,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: Color(0xFF00204A), // dark blue
                     fontSize: 16,
                   ),
                 ),
@@ -301,7 +299,7 @@ class _AboutSectionScreenState extends State<AboutSectionScreen>
                 Text(
                   description,
                   style: const TextStyle(
-                    color: Colors.white70,
+                    color: Color(0xFF003366), // slightly lighter dark blue
                     fontSize: 14,
                     height: 1.4,
                   ),

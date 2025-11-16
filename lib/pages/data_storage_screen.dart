@@ -36,7 +36,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: const Color.fromARGB(255, 5, 1, 93),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
             ),
@@ -56,7 +56,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 11, 3, 81),
         title: const Text("Data & Storage"),
         elevation: 0,
       ),
@@ -168,7 +168,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
 
           // 🔹 Data Security Notice
           Card(
-            color: const Color.fromARGB(255, 93, 174, 172),
+            color: const Color.fromARGB(255, 93, 109, 174),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: const Padding(
@@ -187,7 +187,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
           // 🔹 Done Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF004D40),
+              backgroundColor: const Color.fromARGB(255, 0, 3, 77),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -255,7 +255,7 @@ class _DataStorageScreenState extends State<DataStorageScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: SwitchListTile(
-        activeColor: Colors.teal,
+        activeColor: const Color.fromARGB(255, 3, 8, 78),
         value: value,
         onChanged: onChanged,
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),

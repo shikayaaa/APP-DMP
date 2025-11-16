@@ -315,7 +315,7 @@ class IntermentRequirementsScreen extends StatelessWidget {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromARGB(255, 145, 189, 182),
+                                const Color.fromARGB(255, 146, 145, 189),
                             foregroundColor: Colors.black, // ✅ black text
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(

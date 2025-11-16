@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// ✅ Correct relative imports (all inside pages folder)
+// Correct imports
 import 'pricelist_screen.dart';
 import 'intermentrequest_screen.dart';
 import 'myplans_screen.dart';
@@ -9,7 +9,7 @@ import 'contact_support_screen.dart';
 import 'payments_screen.dart';
 import 'services_screen.dart';
 import 'profile_screen.dart';
-import 'notifications_screen.dart'; // 🔹 Add this import
+import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onNavTapped,
-        selectedItemColor: Colors.teal.shade800,
+        selectedItemColor: Colors.blue.shade800, // BLUE
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
@@ -66,7 +66,7 @@ class HomeTab extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 186, 153),
+          color: Colors.blue, // BLUE BOX
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -105,15 +105,13 @@ class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // 🔹 Limit content width for desktop view
     final double contentWidth =
-        screenWidth > 1000 ? 800 : (screenWidth * 0.9); // fits nicely on desktop
+        screenWidth > 1000 ? 800 : (screenWidth * 0.9);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182),
+      backgroundColor: const Color.fromARGB(255, 180, 205, 255), // LIGHT BLUE BG
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: Colors.blue, // BLUE
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
@@ -157,7 +155,6 @@ class HomeTab extends StatelessWidget {
         ],
       ),
 
-      // 🔹 Centered responsive layout for desktop
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -166,14 +163,14 @@ class HomeTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // 🔹 Quick Menu Grid
+                // Quick Menu
                 GridView.count(
                   crossAxisCount: screenWidth > 900 ? 4 : 2,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   mainAxisSpacing: 14,
                   crossAxisSpacing: 14,
-                  childAspectRatio: 1.2, // ✅ balanced size for desktop
+                  childAspectRatio: 1.2,
                   children: [
                     _buildQuickMenuItem(
                         context, Icons.shopping_cart, "Buy a Lot", () {
@@ -184,8 +181,8 @@ class HomeTab extends StatelessWidget {
                         ),
                       );
                     }),
-                    _buildQuickMenuItem(context, Icons.folder_copy, "My Lots",
-                        () {
+                    _buildQuickMenuItem(
+                        context, Icons.folder_copy, "My Lots", () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -203,8 +200,8 @@ class HomeTab extends StatelessWidget {
                         ),
                       );
                     }),
-                    _buildQuickMenuItem(context, Icons.menu_book,
-                        "Notices & Guidelines", () {
+                    _buildQuickMenuItem(
+                        context, Icons.menu_book, "Notices & Guidelines", () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -217,13 +214,13 @@ class HomeTab extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // 🔹 Contact & Support Button
+                // Contact & Support Button
                 SizedBox(
                   width: 350,
                   height: 90,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+                      backgroundColor: Colors.blue, // BLUE
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

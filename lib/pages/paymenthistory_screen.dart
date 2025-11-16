@@ -6,21 +6,21 @@ class PaymentHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182),
+      backgroundColor: const Color.fromARGB(255, 145, 176, 221), // BLUE TINT
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: Colors.blue, // CHANGED TO BLUE
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(221, 255, 255, 255)),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Payment History",
-          style: TextStyle(color: Color.fromARGB(221, 255, 255, 255)),
+          style: TextStyle(color: Colors.white),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list, color: Color.fromARGB(221, 255, 255, 255)),
+            icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: () {},
           ),
         ],
@@ -32,7 +32,7 @@ class PaymentHistoryScreen extends StatelessWidget {
           children: [
             const Text(
               "Your transaction records",
-              style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 14),
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
             const SizedBox(height: 16),
 
@@ -92,7 +92,7 @@ class PaymentHistoryScreen extends StatelessWidget {
     );
   }
 
-  // ✅ Payment Card
+  // ✅ Payment Card (BLUE VERSION)
   Widget _buildPaymentCard({
     required String title,
     required String amount,
@@ -109,8 +109,8 @@ class PaymentHistoryScreen extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.green.shade100,
-                  child: const Icon(Icons.check_circle, color: Colors.green),
+                  backgroundColor: Colors.blue.shade100, // CHANGED
+                  child: const Icon(Icons.check_circle, color: Colors.blue), // CHANGED
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -137,13 +137,13 @@ class PaymentHistoryScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade50,
+                  color: Colors.blue.shade50, // CHANGED
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   status,
                   style: const TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
+                      color: Colors.blue, fontWeight: FontWeight.bold), // CHANGED
                 ),
               ),
             ),
@@ -160,7 +160,7 @@ class PaymentHistoryScreen extends StatelessWidget {
   }
 }
 
-// ✅ Summary Row
+// ✅ Summary Row (UNCHANGED)
 class buildSummaryRow extends StatelessWidget {
   final String label;
   final String value;

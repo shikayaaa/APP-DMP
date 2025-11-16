@@ -9,15 +9,15 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182), // light background
+      backgroundColor: const Color(0xFFE8F0FF), // 🔵 light blue background
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153), // dark green
+        backgroundColor: const Color(0xFF0A6CFF), // 🔵 blue top bar
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
           "Profile",
           style: TextStyle(
-            color: Colors.black, // ✅ changed from white to black
+            color: Colors.white, // white text for better contrast
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -28,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
             child: Text(
               "Manage your account settings",
               style: TextStyle(
-                color: Colors.black, // ✅ changed from white to black
+                color: Colors.white70, // softer white
                 fontSize: 14,
               ),
             ),
@@ -45,17 +45,24 @@ class ProfileScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.teal.shade700,
+                  backgroundColor: const Color(0xFF0A6CFF), // blue circle
                   child: const Text(
                     "JD",
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.black, // ✅ changed from white to black
+                      color: Colors.white, // white initials for contrast
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -70,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Color(0xFF0A6CFF), // name in blue
                         ),
                       ),
                       SizedBox(height: 4),
@@ -161,10 +168,9 @@ class ProfileScreen extends StatelessWidget {
               ),
               subtitle: const Text(
                 "Sign out of your account",
-                style: TextStyle(color: Colors.black), // ✅ black text
+                style: TextStyle(color: Colors.black),
               ),
               onTap: () {
-                // ✅ Sign out: clear all routes and go back to login
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -181,7 +187,7 @@ class ProfileScreen extends StatelessWidget {
             child: Text(
               "Dumaguete Memorial Park v1.0.0\n© 2024 All rights reserved",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 12), // ✅ changed to black
+              style: TextStyle(color: Colors.black54, fontSize: 12),
             ),
           ),
         ],
@@ -204,7 +210,7 @@ class ProfileScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.black, // ✅ black
+              color: Color(0xFF0A6CFF), // blue for value
             ),
           ),
           const SizedBox(height: 4),
@@ -226,7 +232,7 @@ class ProfileScreen extends StatelessWidget {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.black, // ✅ black
+          color: Color(0xFF0A6CFF), // blue
         ),
       ),
     );
@@ -241,14 +247,14 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: Colors.teal),
+        leading: Icon(icon, color: const Color(0xFF0A6CFF)),
         title: Text(
           value,
-          style: const TextStyle(color: Colors.black), // ✅ black
+          style: const TextStyle(color: Colors.black),
         ),
         subtitle: Text(
           label,
-          style: const TextStyle(color: Colors.black54), // ✅ black
+          style: const TextStyle(color: Colors.black54),
         ),
       ),
     );
@@ -269,14 +275,14 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: Colors.teal),
+        leading: Icon(icon, color: const Color(0xFF0A6CFF)),
         title: Text(
           title,
-          style: const TextStyle(color: Colors.black), // ✅ black
+          style: const TextStyle(color: Colors.black),
         ),
         subtitle: Text(
           subtitle,
-          style: const TextStyle(color: Colors.black54), // ✅ black
+          style: const TextStyle(color: Colors.black54),
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
         onTap: onTap,

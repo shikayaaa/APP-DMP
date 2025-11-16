@@ -37,19 +37,19 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
   ];
 
   // File uploads
-  List<String> uploadedFiles = []; // ✅ safe initialization
+  List<String> uploadedFiles = [];
 
   // Pick files
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
-      type: FileType.any, // use FileType.image if you want only photos
-      withData: true, // important for Flutter web
+      type: FileType.any,
+      withData: true,
     );
 
     if (result != null) {
       setState(() {
-        uploadedFiles = result.files.map((f) => f.name).toList(); // ✅ safe
+        uploadedFiles = result.files.map((f) => f.name).toList();
       });
     }
   }
@@ -73,18 +73,18 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal.shade50,
+      backgroundColor: Colors.blue.shade50,   // ← SIMPLE BLUE
       appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153),
-  iconTheme: const IconThemeData(color: Colors.white), // ← makes the arrow white
-  title: const Text(
-    "New Interment Request",
-    style: TextStyle(
-      color: Colors.white, // ← makes text white
-      fontWeight: FontWeight.bold, // ← makes it bold
-    ),
-  ),
-),
+        backgroundColor: const Color(0xFF1565C0), // ← DEEP BLUE
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "New Interment Request",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
 
       body: Form(
         key: _formKey,
@@ -92,6 +92,7 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+
               // Deceased Info
               _buildCard(
                 title: "Deceased Information",
@@ -133,6 +134,7 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                           val == null ? "Please select section" : null,
                     ),
                     const SizedBox(height: 12),
+
                     Row(
                       children: [
                         Expanded(
@@ -162,7 +164,9 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 12),
+
                     TextFormField(
                       controller: _nicheController,
                       decoration: const InputDecoration(
@@ -196,7 +200,9 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                       validator: (value) =>
                           value!.isEmpty ? "Date required" : null,
                     ),
+
                     const SizedBox(height: 12),
+
                     DropdownButtonFormField<String>(
                       value: _selectedTime,
                       decoration: const InputDecoration(
@@ -235,7 +241,9 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                           ? "Contact person name is required"
                           : null,
                     ),
+
                     const SizedBox(height: 12),
+
                     TextFormField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
@@ -253,7 +261,7 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
 
               const SizedBox(height: 16),
 
-              // Required Documents
+              // Required documents
               _buildCard(
                 title: "Required Documents",
                 child: Column(
@@ -264,18 +272,21 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                       style: TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 8),
+
                     const Text("• Burial Permit (Required)"),
                     const Text("• Death Certificate (Recommended)"),
                     const Text("• Medical Certificate (If applicable)"),
+
                     const SizedBox(height: 12),
+
                     OutlinedButton.icon(
                       onPressed: _pickFiles,
                       icon: const Icon(Icons.upload_file),
                       label: const Text("Choose Files"),
                     ),
+
                     const SizedBox(height: 8),
 
-                    // Show chosen files safely
                     if (uploadedFiles.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +303,7 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
 
               const SizedBox(height: 16),
 
-              // Additional Notes
+              // Notes
               _buildCard(
                 title: "Additional Notes",
                 child: TextFormField(
@@ -308,9 +319,10 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
 
               const SizedBox(height: 24),
 
+              // Submit Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal.shade800,
+                  backgroundColor: const Color(0xFF0D47A1), // DEEP BLUE
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                   shape: RoundedRectangleBorder(
@@ -347,9 +359,11 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             child,
           ],

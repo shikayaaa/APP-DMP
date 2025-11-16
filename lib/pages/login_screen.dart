@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/backg.png"),
+            image: AssetImage("assets/images/backg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                   child: Image.asset(
-                    'assets/dmplogofinal.png',
+                    'assets/images/dmplogofinal.png',
                     width: 120,
                     height: 120,
                     fit: BoxFit.contain,
@@ -91,13 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
-                    color: Color.fromARGB(255, 72, 169, 161),
+                    color: Color.fromARGB(255, 10, 25, 120),
                   ),
                 ),
                 const Text(
                   "Memorial Park",
                   style: TextStyle(
-                      fontSize: 14, color: Color.fromARGB(179, 11, 97, 80)),
+                      fontSize: 14, color: Color.fromARGB(179, 15, 11, 97)),
                 ),
                 const SizedBox(height: 24),
 
@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal, // ✅ change color here
+                              color: Color.fromARGB(255, 0, 45, 150), // ✅ change color here
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -135,11 +135,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           // ✅ Email Field (White Container)
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 0, 0),
+                                color: const Color.fromARGB(255, 54, 106, 170),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.05),
+                                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
                                   blurRadius: 5,
                                   offset: const Offset(0, 2),
                                 ),
@@ -162,11 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           // ✅ Password Field (White Container)
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 21, 15),
+                              color: const Color.fromARGB(255, 54, 106, 170),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
                                   blurRadius: 5,
                                   offset: const Offset(0, 2),
                                 ),
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: ElevatedButton(
                               onPressed: _signIn,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.teal.shade700,
+                                backgroundColor: const Color.fromARGB(255, 0, 40, 121),
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(
@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               "Forgot Password?",
                               style: TextStyle(
-                                color: Colors.teal,
+                                color: Color.fromARGB(255, 0, 22, 150),
                                 decoration: TextDecoration.underline,
                               ),
                             ),
@@ -244,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TextSpan(
                                     text: "Sign up",
                                     style: TextStyle(
-                                      color: Colors.teal,
+                                      color: Color.fromARGB(255, 0, 60, 150),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

@@ -92,7 +92,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal.shade800,
+                backgroundColor: const Color.fromARGB(255, 77, 90, 124),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -112,7 +112,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
               },
               child: const Text(
                 "Avail Plan",
-                style: TextStyle(color: Colors.black), // changed from white → black
+                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // changed from white → black
               ),
             ),
           )
@@ -223,7 +223,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             const SizedBox(height: 12),
             Row(
               children: const [
-                Icon(Icons.location_on, color: Colors.teal),
+                Icon(Icons.location_on, color: Color.fromARGB(255, 27, 0, 150)),
                 SizedBox(width: 6),
                 Text(
                   "Garden Family Estate",
@@ -266,7 +266,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             const SizedBox(height: 12),
             Row(
               children: const [
-                Icon(Icons.location_on, color: Colors.teal),
+                Icon(Icons.location_on, color: Color.fromARGB(255, 0, 45, 150)),
                 SizedBox(width: 6),
                 Text(
                   "Family Estate",
@@ -312,11 +312,11 @@ class _PriceListScreenState extends State<PriceListScreen> {
     return Scaffold(
       backgroundColor: Colors.teal.shade50,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 0, 16, 118),
         iconTheme: const IconThemeData(color: Colors.black), // changed to black
         title: const Text(
           "Price List",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // changed
+          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold), // changed
         ),
       ),
       body: Column(children: [
@@ -337,7 +337,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
                       _selectedCategory = index;
                     });
                   },
-                  selectedColor: Colors.teal.shade700,
+                  selectedColor: const Color.fromARGB(255, 0, 22, 121),
                   backgroundColor: Colors.grey.shade300,
                   labelStyle: TextStyle(
                       color: isSelected ? Colors.white : Colors.black87),

@@ -20,7 +20,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
       'description':
           "Beautiful plots in peaceful settings with perpetual care and maintenance",
       'features': ["Family estates", "Garden plots", "Premium locations"],
-      'gradient': [const Color(0xFF00FF9C), const Color(0xFF00B86B)],
+      'gradient': [const Color(0xFF1E3A8A), const Color(0xFF3B82F6)],
     },
     {
       'icon': LucideIcons.flame,
@@ -28,7 +28,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
       'description':
           "Dignified cremation with various memorial options for your loved ones",
       'features': ["Private services", "Urn selection", "Memorial gardens"],
-      'gradient': [const Color(0xFF00B86B), const Color(0xFF008E63)],
+      'gradient': [const Color(0xFF1E3A8A), const Color(0xFF3B82F6)],
     },
     {
       'icon': LucideIcons.home,
@@ -36,7 +36,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
       'description':
           "Elegant above-ground structures for families seeking lasting tributes",
       'features': ["Private estates", "Climate controlled", "Custom designs"],
-      'gradient': [const Color(0xFF00FF9C), const Color(0xFF00B86B)],
+      'gradient': [const Color(0xFF1E3A8A), const Color(0xFF3B82F6)],
     },
     {
       'icon': LucideIcons.flower2,
@@ -44,7 +44,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
       'description':
           "Serene garden settings with personalized monuments and landscaping",
       'features': ["Custom markers", "Garden maintenance", "Seasonal flowers"],
-      'gradient': [const Color(0xFF00FFB0), const Color(0xFF00B86B)],
+      'gradient': [const Color(0xFF1E3A8A), const Color(0xFF60A5FA)],
     },
   ];
 
@@ -65,7 +65,11 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF001F1B), Color(0xFF00382F), Color(0xFF005F4E)],
+          colors: [
+            Color(0xFFDBEAFE),
+            Color(0xFF93C5FD),
+            Color(0xFF3B82F6)
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -122,14 +126,14 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF00FF9C), Color(0xFF00B86B)],
+              colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
             ),
             borderRadius: BorderRadius.circular(50),
           ),
           child: const Text(
             "Our Services",
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 13,
             ),
@@ -142,7 +146,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
             style: const TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Color(0xFF1E3A8A),
               height: 1.3,
             ),
             children: [
@@ -152,7 +156,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
                 style: TextStyle(
                   foreground: Paint()
                     ..shader = const LinearGradient(
-                      colors: [Color(0xFF00FF9C), Color(0xFF00B86B)],
+                      colors: [Color(0xFF60A5FA), Color(0xFF3B82F6)],
                     ).createShader(
                       const Rect.fromLTWH(0, 0, 200, 70),
                     ),
@@ -167,7 +171,7 @@ class _ServicesSectionScreenState extends State<ServicesSectionScreen> {
           "we provide comprehensive care tailored to your family's wishes.",
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white70,
+          color: Color.fromARGB(179, 0, 0, 0),  // <-- this is the color
             fontSize: 18,
             height: 1.5,
           ),
@@ -273,7 +277,7 @@ class _ServiceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xFF0E1E1A),
+        color: const Color(0xFF1E40AF), // ✅ Card background blue
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -303,7 +307,7 @@ class _ServiceCard extends StatelessWidget {
                 )
               ],
             ),
-            child: Icon(icon, color: Colors.black, size: 30),
+            child: Icon(icon, color: Colors.white, size: 30), // ✅ icon white
           ),
           const SizedBox(height: 20),
           Text(
@@ -328,8 +332,7 @@ class _ServiceCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       feature,
-                      style:
-                          const TextStyle(fontSize: 14, color: Colors.white),
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
                     ),
                   ),
                 ],
@@ -376,7 +379,7 @@ class _CurvePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..shader = const LinearGradient(
-        colors: [Color(0xFF00FF9C), Color(0xFF00B86B)],
+        colors: [Color.fromARGB(255, 255, 255, 255), Color(0xFF3B82F6)],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 

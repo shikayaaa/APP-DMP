@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:url_launcher/url_launcher.dart'; // ✅ For opening Google Maps
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactSectionScreen extends StatefulWidget {
   const ContactSectionScreen({super.key});
@@ -81,7 +81,6 @@ class _ContactSectionState extends State<ContactSectionScreen> {
     );
   }
 
-  // ✅ Open Google Maps link
   Future<void> _openMap() async {
     final Uri mapUrl = Uri.parse('https://maps.app.goo.gl/ypPngKNTVF8kbhBK6');
     if (await canLaunchUrl(mapUrl)) {
@@ -101,7 +100,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF0B0C0C), Color(0xFF002C25)],
+          colors: [Color.fromARGB(255, 11, 40, 146), Color(0xFF00204A)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -121,7 +120,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF00FFB3), Color(0xFF007A58)],
+                        colors: [Color(0xFF4D9FFF), Color(0xFF1E63CC)],
                       ),
                       borderRadius: BorderRadius.circular(40),
                     ),
@@ -171,7 +170,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                       flex: isWide ? 1 : 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF121414),
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
@@ -190,7 +189,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: Color.fromARGB(255, 0, 0, 0),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -225,12 +224,12 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                      onPressed:
-                                          _isSubmitting ? null : _handleSubmit,
+                                      onPressed: _isSubmitting ? null : _handleSubmit,
                                       style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(vertical: 18),
-                                        backgroundColor: const Color(0xFF00FFB3),
-                                        foregroundColor: const Color(0xFF002C25),
+                                        padding:
+                                            const EdgeInsets.symmetric(vertical: 18),
+                                        backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+                                        foregroundColor: const Color(0xFF00204A),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(999),
                                         ),
@@ -246,14 +245,16 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                               ),
                                             )
                                           : Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               mainAxisSize: MainAxisSize.min,
                                               children: const [
                                                 Icon(Icons.send_rounded, size: 18),
                                                 SizedBox(width: 8),
                                                 Text(
                                                   'Send Message',
-                                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600),
                                                 ),
                                               ],
                                             ),
@@ -289,11 +290,11 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                               final info = _contactInfo[index];
                               return Container(
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF1A1C1C),
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.25),
+                                      color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.25),
                                       blurRadius: 12,
                                     )
                                   ],
@@ -306,11 +307,11 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                       height: 44,
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
-                                          colors: [Color(0xFF00FFB3), Color(0xFF007A58)],
+                                          colors: [Color(0xFF4D9FFF), Color(0xFF1E63CC)],
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: Icon(info.icon, color: Colors.black, size: 22),
+                                      child: Icon(info.icon, color: const Color.fromARGB(255, 0, 0, 0), size: 22),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -320,30 +321,34 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                         children: [
                                           Text(info.title,
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.w700, color: Colors.white)),
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color.fromARGB(255, 0, 0, 0))),
                                           const SizedBox(height: 4),
                                           Text(info.content,
-                                              style: const TextStyle(color: Colors.white70, fontSize: 13)),
+                                              style: const TextStyle(
+                                                  color: Color.fromARGB(179, 0, 0, 0), fontSize: 13)),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
                               )
-                                  .animate(target: _inView ? 1 : 0, delay: Duration(milliseconds: 300 + index * 80))
+                                  .animate(
+                                      target: _inView ? 1 : 0,
+                                      delay: Duration(milliseconds: 300 + index * 80))
                                   .fadeIn()
                                   .slideY(begin: 0.06, end: 0);
                             },
                           ),
                           const SizedBox(height: 16),
 
-                          // ✅ Map Container
+                          // Map Container
                           Container(
                             height: 300,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(14),
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF00362E), Color(0xFF001D19)],
+                                colors: [Color(0xFF00336A), Color(0xFF001E3C)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -359,7 +364,6 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                               child: Stack(
                                 fit: StackFit.expand,
                                 children: [
-                                  // ✅ Local image instead of network image
                                   Image.asset(
                                     'assets/images/dmp.png',
                                     fit: BoxFit.cover,
@@ -383,7 +387,8 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                         SizedBox(height: 4),
                                         Text(
                                           'Piapi Boulevard, Dumaguete City',
-                                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                                          style: TextStyle(
+                                              color: Colors.white70, fontSize: 13),
                                         ),
                                       ],
                                     ),
@@ -394,8 +399,8 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                       icon: const Icon(Icons.map_rounded),
                                       label: const Text('Open in Maps'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF00FFB3),
-                                        foregroundColor: const Color(0xFF002C25),
+                                        backgroundColor: const Color(0xFF4D9FFF),
+                                        foregroundColor: const Color(0xFF00204A),
                                       ),
                                     ),
                                   ),
@@ -423,18 +428,18 @@ class _ContactSectionState extends State<ContactSectionScreen> {
       keyboardType: type,
       minLines: minLines,
       maxLines: maxLines ?? minLines,
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Color.fromARGB(255, 2, 1, 1)),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white38),
+        hintStyle: const TextStyle(color: Color.fromARGB(97, 0, 0, 0)),
         labelStyle: const TextStyle(color: Colors.white70),
         filled: true,
-        fillColor: const Color(0xFF1A1C1C),
+        fillColor: const Color.fromARGB(255, 68, 105, 158),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 1, 10, 38).withOpacity(0.1), width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -442,7 +447,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(color: Color(0xFF00FFB3), width: 1.2),
+          borderSide: BorderSide(color: Color(0xFF4D9FFF), width: 1.2),
         ),
       ),
       validator: (v) =>

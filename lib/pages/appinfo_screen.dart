@@ -11,7 +11,7 @@ class AppInfoScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 18, 52, 186),
         title: const Text("App Information"),
         elevation: 0,
       ),
@@ -32,7 +32,7 @@ class AppInfoScreen extends StatelessWidget {
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.green.shade100,
-                child: const Icon(Icons.apartment, color: Colors.green),
+                child: const Icon(Icons.apartment, color: Color.fromARGB(255, 76, 152, 175)),
               ),
               title: const Text(
                 "Dumaguete Memorial Park",
@@ -199,7 +199,7 @@ class AppInfoScreen extends StatelessWidget {
   // 🔹 Feature with check icon
   static Widget _buildFeature(String text) {
     return ListTile(
-      leading: const Icon(Icons.check_circle, color: Colors.green),
+      leading: const Icon(Icons.check_circle, color: Color.fromARGB(255, 76, 175, 173)),
       title: Text(
         text,
         style: const TextStyle(color: Colors.black), // ✅ changed to black
@@ -219,7 +219,7 @@ class AppInfoScreen extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Colors.teal.shade50,
-          child: Icon(icon, color: Colors.teal),
+          child: Icon(icon, color: const Color.fromARGB(255, 5, 0, 150)),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),

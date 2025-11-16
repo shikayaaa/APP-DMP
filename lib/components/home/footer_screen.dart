@@ -36,9 +36,9 @@ class FooterSection extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF0A0F0D), // deep blackish green
-            Color(0xFF0D1816),
-            Color(0xFF0F2722),
+            Color.fromARGB(255, 10, 12, 15), // deep blackish green
+            Color.fromARGB(255, 10, 11, 22),
+            Color.fromARGB(255, 9, 14, 156),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -57,8 +57,8 @@ class FooterSection extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Color(0xFF00FFB2), // neon mint
-                    Colors.transparent,
+                    Color.fromARGB(255, 185, 208, 214), // neon mint
+                    Color.fromARGB(0, 12, 12, 12),
                   ],
                   radius: 0.8,
                 ),
@@ -75,8 +75,8 @@ class FooterSection extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Color(0xFF007E5A), // deep green
-                    Colors.transparent,
+                   Color.fromARGB(255, 185, 208, 214),
+                     Color.fromARGB(0, 12, 12, 12),
                   ],
                   radius: 0.8,
                 ),
@@ -119,8 +119,8 @@ class FooterSection extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
                                         colors: [
-                                          Color(0xFF00FFB2),
-                                          Color(0xFF007E5A),
+                                          Color.fromARGB(255, 27, 75, 194),
+                                          Color.fromARGB(255, 8, 8, 109),
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -166,7 +166,7 @@ class FooterSection extends StatelessWidget {
                               const Text(
                                 'Honoring lives with dignity and compassion since 1990. We provide a serene sanctuary for families to remember and celebrate their loved ones.',
                                 style: TextStyle(
-                                  color: Color(0xFFB8E1D0),
+                                  color: Color.fromRGBO(255, 255, 255, 1),
                                   height: 1.5,
                                 ),
                               ),
@@ -200,7 +200,7 @@ class FooterSection extends StatelessWidget {
                                 Text(
                                   entry.key,
                                   style: const TextStyle(
-                                    color: Color(0xFF00FFB2),
+                                    color: Color.fromARGB(255, 255, 255, 255),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                   ),
@@ -232,7 +232,7 @@ class FooterSection extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 40),
-                const Divider(color: Color(0xFF1B3C32)),
+                const Divider(color: Color.fromARGB(255, 7, 12, 11)),
                 const SizedBox(height: 20),
 
                 // Bottom bar
@@ -247,7 +247,7 @@ class FooterSection extends StatelessWidget {
                         Text(
                           '© $currentYear Dumaguete Memorial Park. All rights reserved.',
                           style: const TextStyle(
-                            color: Color(0xFF7FA594),
+                            color: Color.fromARGB(255, 0, 0, 0),
                             fontSize: 13,
                           ),
                         ),
@@ -258,19 +258,19 @@ class FooterSection extends StatelessWidget {
                             Text(
                               'Made with ',
                               style: TextStyle(
-                                color: Color(0xFF7FA594),
+                                color: Color.fromARGB(255, 0, 0, 0),
                                 fontSize: 13,
                               ),
                             ),
                             Icon(
                               LucideIcons.heart,
-                              color: Color(0xFF00FFB2),
+                              color: Color.fromARGB(255, 0, 0, 0),
                               size: 14,
                             ),
                             Text(
                               ' for families in Negros Oriental',
                               style: TextStyle(
-                                color: Color(0xFF7FA594),
+                                color: Color.fromARGB(255, 0, 0, 0),
                                 fontSize: 13,
                               ),
                             ),
@@ -305,8 +305,8 @@ class FooterSection extends StatelessWidget {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xFF00FFB2),
-                Color(0xFF007E5A),
+                Color.fromARGB(255, 22, 214, 236),
+                Color.fromARGB(255, 19, 66, 141),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

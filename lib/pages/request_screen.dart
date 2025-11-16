@@ -6,7 +6,7 @@ class RequestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 145, 189, 182),
+      color: const Color(0xFFE8F0FF), // 🔵 light blue background
       child: Column(
         children: [
           const SizedBox(height: 10),
@@ -67,6 +67,13 @@ class RequestScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +87,7 @@ class RequestScreen extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black, // ✅ black
+                  color: Color(0xFF0A6CFF), // 🔵 name blue
                 ),
               ),
               Container(
@@ -103,23 +110,23 @@ class RequestScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             location,
-            style: const TextStyle(color: Colors.black87), // ✅ black
+            style: const TextStyle(color: Colors.black87),
           ),
           const SizedBox(height: 8),
           Text(
             requestedDate,
-            style: const TextStyle(color: Colors.black87), // ✅ black
+            style: const TextStyle(color: Colors.black87),
           ),
           Text(
             submittedDate,
-            style: const TextStyle(color: Colors.black87), // ✅ black
+            style: const TextStyle(color: Colors.black87),
           ),
           const SizedBox(height: 8),
           Text(
             "Note: Morning service preferred",
             style: const TextStyle(
               fontSize: 12,
-              color: Colors.black54, // ✅ black shade
+              color: Colors.black54,
             ),
           ),
           const SizedBox(height: 8),
@@ -130,7 +137,7 @@ class RequestScreen extends StatelessWidget {
             children: [
               Text(
                 "$documents document(s)",
-                style: const TextStyle(color: Colors.black87), // ✅ black
+                style: const TextStyle(color: Colors.black87),
               ),
             ],
           ),

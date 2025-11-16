@@ -8,12 +8,12 @@ class MyPlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 187, 221, 217),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-  backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+  backgroundColor: const Color.fromARGB(255, 1, 70, 148),
   elevation: 0,
   iconTheme: const IconThemeData(
-    color: Colors.white, // 👈 makes the back arrow white
+    color: Color.fromARGB(255, 255, 255, 255), // 👈 makes the back arrow white
   ),
   title: const Text(
     "My Plans",
@@ -33,7 +33,7 @@ class MyPlansScreen extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 8.0),
       child: Text(
         "Your memorial plan details",
-        style: TextStyle(color: Color.fromARGB(179, 0, 62, 52), fontSize: 14),
+        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 14),
       ),
     ),
   ),
@@ -75,7 +75,7 @@ class MyPlansScreen extends StatelessWidget {
                           child: const Text(
                             "Active",
                             style: TextStyle(
-                              color: Colors.green,
+                              color: Color.fromARGB(255, 0, 48, 132),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -86,7 +86,7 @@ class MyPlansScreen extends StatelessWidget {
                     Row(
                       children: const [
                         Icon(Icons.location_on,
-                            size: 16, color: Colors.grey),
+                            size: 16, color: Color.fromARGB(255, 255, 255, 255)),
                         SizedBox(width: 4),
                         Text("Garden Family Estate"),
                       ],
@@ -101,7 +101,7 @@ class MyPlansScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Start Date",
-                                style: TextStyle(color: Colors.grey)),
+                                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
                             SizedBox(height: 4),
                             Text("January 15, 2024"),
                           ],
@@ -110,7 +110,7 @@ class MyPlansScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Payment Term",
-                                style: TextStyle(color: Colors.grey)),
+                                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
                             SizedBox(height: 4),
                             Text("36 months"),
                           ],
@@ -131,13 +131,13 @@ class MyPlansScreen extends StatelessWidget {
                     LinearProgressIndicator(
                       value: 0.94,
                       backgroundColor: Colors.grey.shade300,
-                      color: Colors.teal,
+                      color: const Color.fromARGB(255, 10, 0, 150),
                       minHeight: 8,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     const SizedBox(height: 6),
                     const Text("₱739,093 paid    •    94% complete",
-                        style: TextStyle(color: Colors.grey)),
+                        style: TextStyle(color: Color.fromARGB(255, 90, 144, 177))),
                     const SizedBox(height: 20),
 
                     // Next Payment Due
@@ -150,7 +150,7 @@ class MyPlansScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: const Color.fromARGB(255, 13, 157, 167),
+                            backgroundColor: const Color.fromARGB(255, 223, 234, 234),
                             child: const Icon(Icons.calendar_today,
                                 color: Colors.blue),
                           ),
@@ -184,7 +184,7 @@ class MyPlansScreen extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton.icon(
   style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.teal.shade900,
+    backgroundColor: const Color.fromARGB(255, 27, 33, 100),
     padding: const EdgeInsets.symmetric(vertical: 14),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12),
@@ -287,7 +287,7 @@ class MyPlansScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, color: Colors.teal),
+          Icon(icon, color: const Color.fromARGB(255, 17, 0, 150)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

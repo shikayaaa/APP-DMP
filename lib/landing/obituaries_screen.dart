@@ -56,9 +56,9 @@ class _ObituariesScreenState extends State<ObituariesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF081C15), // 🟢 dark background
+      backgroundColor: const Color(0xFF001E3C), // 🔵 Dark Blue Background
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0B3D2E), // 🟢 deep green header
+        backgroundColor: const Color(0xFF00204A), // 🔵 Deep Blue Header
         elevation: 0,
         title: const Text(
           'Obituaries',
@@ -74,7 +74,7 @@ class _ObituariesScreenState extends State<ObituariesScreen> {
         ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF00C896)))
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF4D9FFF)))
           : errorMessage != null
               ? Center(
                   child: Column(
@@ -91,7 +91,7 @@ class _ObituariesScreenState extends State<ObituariesScreen> {
                       ElevatedButton(
                         onPressed: _fetchObituaries,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00C896),
+                          backgroundColor: const Color(0xFF4D9FFF), // 🔵 Neon Blue Accent
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         ),
@@ -138,7 +138,7 @@ class _ObituariesScreenState extends State<ObituariesScreen> {
   }
 }
 
-// ✅ Card design with simple dark + neon green theme
+// 🔵 Card design — Dark Blue + Neon Blue accent
 class _ObituaryCard extends StatelessWidget {
   final Obituary obituary;
   final VoidCallback onTap;
@@ -155,18 +155,18 @@ class _ObituaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF0D261C), // 🟢 dark card color
+      color: const Color(0xFF00204A), // 🔵 Dark Card Blue
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
-      shadowColor: const Color(0xFF00C896).withOpacity(0.3),
+      shadowColor: const Color(0xFF4D9FFF).withOpacity(0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
-        side: const BorderSide(color: Color(0xFF00C896), width: 1.2),
+        side: const BorderSide(color: Color(0xFF4D9FFF), width: 1.2),
       ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-        splashColor: const Color(0xFF00C896).withOpacity(0.15),
+        splashColor: const Color(0xFF4D9FFF).withOpacity(0.15),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -174,7 +174,7 @@ class _ObituaryCard extends StatelessWidget {
               // ✅ Photo
               CircleAvatar(
                 radius: 38,
-                backgroundColor: const Color(0xFF00C896).withOpacity(0.2),
+                backgroundColor: const Color(0xFF4D9FFF).withOpacity(0.2),
                 backgroundImage: NetworkImage(
                   obituary.photoUrl != null && obituary.photoUrl!.isNotEmpty
                       ? obituary.photoUrl!
@@ -198,7 +198,7 @@ class _ObituaryCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF00E0A6), // 🟢 accent green
+                        color: Color(0xFF4D9FFF), // 🔵 Neon Blue Accent
                       ),
                     ),
                     const SizedBox(height: 6),

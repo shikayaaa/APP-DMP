@@ -62,7 +62,7 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Thank you for your condolence'),
-            backgroundColor: Color(0xFF00B86B),
+            backgroundColor: Color(0xFF0066CC), // 🔵 Deep Blue
           ),
         );
       }
@@ -91,19 +91,19 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
     final obituary = widget.obituary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF001F1B),
+      backgroundColor: const Color(0xFF001E3C), // 🔵 Dark Blue Background
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ✅ Gradient Header (emerald–teal glow)
+            // ✅ Gradient Header (Deep Royal Blue Glow)
             Container(
               height: 220,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF00FF9C),
-                    Color(0xFF00B86B),
-                    Color(0xFF00382F),
+                    Color(0xFF4D9FFF), // bright
+                    Color(0xFF0066CC), // medium
+                    Color(0xFF00204A), // dark
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -121,13 +121,13 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                     alignment: Alignment.centerLeft,
                     child: OutlinedButton.icon(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       label: const Text(
                         'Back to Obituaries',
-                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                        style: TextStyle(color: Colors.white),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color.fromARGB(97, 0, 0, 0)),
+                        side: const BorderSide(color: Colors.white38),
                       ),
                     ),
                   ),
@@ -136,7 +136,7 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                   // ✅ Dark glowing card container
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0E1E1A),
+                      color: const Color(0xFF0D204A), // 🔵 Dark Card Blue
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -149,7 +149,7 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Hero image with soft green overlay
+                        // Hero image with soft blue overlay
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -158,8 +158,8 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(0xFF00B86B).withOpacity(0.2),
-                                    const Color(0xFF00382F).withOpacity(0.4),
+                                    const Color(0xFF0066CC).withOpacity(0.2),
+                                    const Color(0xFF00204A).withOpacity(0.4),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -251,7 +251,7 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontStyle: FontStyle.italic,
-                                    color: Color(0xFF00FF9C),
+                                    color: Color(0xFF4D9FFF), // bright blue
                                   ),
                                 ),
                               ],
@@ -262,7 +262,6 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                 
                                   const SizedBox(width: 12),
                                   ElevatedButton.icon(
                                     onPressed: () =>
@@ -270,10 +269,9 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                                     icon: const Icon(Icons.favorite),
                                     label: const Text('Leave Condolence'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF00B86B),
+                                      backgroundColor: const Color(0xFF0066CC), // medium blue
                                       foregroundColor: Colors.white,
-                                      shadowColor:
-                                          const Color(0xFF00FF9C).withOpacity(0.4),
+                                      shadowColor: const Color(0xFF4D9FFF).withOpacity(0.4),
                                       elevation: 6,
                                     ),
                                   ),
@@ -297,8 +295,6 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                                   ),
                                 ),
                               const SizedBox(height: 24),
-
-                              
 
                               // Condolence form
                               if (showCondolenceForm)
@@ -327,10 +323,10 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                                         const EdgeInsets.symmetric(vertical: 8),
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF0F2C25),
+                                      color: const Color(0xFF00204A), // dark card blue
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                          color: const Color(0xFF00B86B)
+                                          color: const Color(0xFF0066CC)
                                               .withOpacity(0.3)),
                                     ),
                                     child: Row(
@@ -338,8 +334,7 @@ class _ObituaryDetailScreenState extends State<ObituaryDetailScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         CircleAvatar(
-                                          backgroundColor:
-                                              const Color(0xFF00B86B),
+                                          backgroundColor: const Color(0xFF0066CC),
                                           child: Text(
                                             condolence.name.isNotEmpty
                                                 ? condolence.name

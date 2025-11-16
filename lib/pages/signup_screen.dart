@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/backg.png"), // ✅ same as login
+            image: AssetImage("assets/images/backg.jpg"), // ✅ same as login
             fit: BoxFit.cover,
           ),
         ),
@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   child: Image.asset(
-                    'assets/dmplogofinal.png',
+                    'assets/images/dmplogofinal.png',
                     width: 120,
                     height: 120,
                     fit: BoxFit.contain,

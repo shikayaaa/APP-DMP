@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // ✅ Added for opening map links
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
 
-  // ✅ Function to launch the map link
   Future<void> _openMap() async {
     final Uri mapUrl = Uri.parse('https://maps.app.goo.gl/fUyhiDi9hcVRsW817');
     if (!await launchUrl(mapUrl, mode: LaunchMode.externalApplication)) {
@@ -15,12 +14,12 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 133, 190, 183),
+      backgroundColor: const Color(0xFFE8F0FF), // 🔵 light blue background
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color(0xFF0A6CFF), // 🔵 main blue
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
@@ -29,18 +28,19 @@ class SupportScreen extends StatelessWidget {
             Text(
               "Support",
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               "We're here to help you",
-              style: TextStyle(color: Colors.black87, fontSize: 12),
+              style: TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ],
         ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -54,19 +54,20 @@ class SupportScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
+
             const SizedBox(height: 12),
 
-            // Call Office Card
+            // CALL OFFICE CARD
             _buildContactCard(
               context: context,
               icon: Icons.phone,
-              iconColor: const Color(0xFF4CAF50),
-              iconBgColor: const Color(0xFFE8F5E9),
+              iconColor: const Color(0xFF0A6CFF), // 🔵 icon blue
+              iconBgColor: const Color(0xFFE8F0FF), // 🔵 bg light blue
               title: "Call Office",
               subtitle: "Speak with our customer service team",
               contact: "0965-143-2479 / 0956-496-9637",
               buttonText: "Call Now",
-              buttonColor: const Color(0xFF00695C),
+              buttonColor: const Color(0xFF0046A3), // 🔵 dark blue
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Opening phone dialer...")),
@@ -76,17 +77,17 @@ class SupportScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Email Us Card
+            // EMAIL CARD
             _buildContactCard(
               context: context,
               icon: Icons.email,
-              iconColor: const Color(0xFF2196F3),
-              iconBgColor: const Color(0xFFE3F2FD),
+              iconColor: const Color(0xFF0A6CFF), // 🔵 icon blue
+              iconBgColor: const Color(0xFFE8F0FF), // 🔵 bg light blue
               title: "Email Us",
               subtitle: "Send us a detailed message",
               contact: "dumaguetememorialpark@gmail.com",
               buttonText: "Send Email",
-              buttonColor: const Color(0xFF00695C),
+              buttonColor: const Color(0xFF0046A3), // 🔵 dark blue
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Opening email app...")),
@@ -96,7 +97,7 @@ class SupportScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Office Hours Card
+            // OFFICE HOURS
             Card(
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -111,7 +112,7 @@ class SupportScreen extends StatelessWidget {
                       children: const [
                         Icon(
                           Icons.access_time,
-                          color: Color(0xFF00695C),
+                          color: Color(0xFF0A6CFF), // 🔵 icon blue
                           size: 20,
                         ),
                         SizedBox(width: 8),
@@ -138,7 +139,7 @@ class SupportScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Visit Our Office Card
+            // VISIT OUR OFFICE
             Card(
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -153,7 +154,7 @@ class SupportScreen extends StatelessWidget {
                       children: const [
                         Icon(
                           Icons.location_on,
-                          color: Color(0xFF00695C),
+                          color: Color(0xFF0A6CFF), // 🔵 icon
                           size: 20,
                         ),
                         SizedBox(width: 8),
@@ -167,7 +168,9 @@ class SupportScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     SizedBox(height: 12),
+
                     Text(
                       "Dumaguete Memorial Park",
                       style: TextStyle(
@@ -176,7 +179,9 @@ class SupportScreen extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
+
                     SizedBox(height: 4),
+
                     Text(
                       "San Jose Ext., Taboan, Dumaguete City",
                       style: TextStyle(
@@ -191,16 +196,17 @@ class SupportScreen extends StatelessWidget {
                         color: Colors.black87,
                       ),
                     ),
+
                     SizedBox(height: 12),
 
-                    // ✅ View Map Button (now opens Google Maps link)
+                    // VIEW MAP BUTTON
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF00695C),
+                          foregroundColor: const Color(0xFF0A6CFF),
                           side: const BorderSide(
-                            color: Color(0xFF00695C),
+                            color: Color(0xFF0A6CFF), // 🔵 border blue
                             width: 1.8,
                           ),
                           shape: RoundedRectangleBorder(
@@ -208,12 +214,12 @@ class SupportScreen extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        onPressed: _openMap, // ✅ Opens Google Maps
+                        onPressed: _openMap,
                         child: const Text(
                           "View Map",
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.black,
+                            color: Color(0xFF0A6CFF), // 🔵 text
                           ),
                         ),
                       ),
@@ -228,7 +234,7 @@ class SupportScreen extends StatelessWidget {
     );
   }
 
-  // Reusable Contact Card Widget
+  // CONTACT CARD
   Widget _buildContactCard({
     required BuildContext context,
     required IconData icon,
@@ -293,12 +299,14 @@ class SupportScreen extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 12),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
+                  backgroundColor: buttonColor, // 🔵 dark blue
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -332,8 +340,7 @@ class SupportScreen extends StatelessWidget {
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+            color: Colors.black87),
         ),
       ],
     );

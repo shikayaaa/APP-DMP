@@ -52,7 +52,7 @@ class PriceListModal extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
               decoration: const BoxDecoration(
-                color: Color(0xFF009688),
+                color: Color.fromARGB(255, 8, 22, 129),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
@@ -260,7 +260,7 @@ class PriceListModal extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF009688), Color(0xFF4DB6AC)],
+                      colors: [Color(0xFF009688), Color.fromARGB(255, 33, 43, 156)],
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -284,7 +284,7 @@ class PriceListModal extends StatelessWidget {
                   ],
                 ),
                 const Divider(),
-                _buildPriceHighlight("Total", row[3], Colors.teal.shade700),
+                _buildPriceHighlight("Total", row[3], const Color.fromARGB(255, 21, 22, 88)),
                 _buildPriceHighlight("20% Down Payment", row[4], Colors.orange.shade700),
 
                 const SizedBox(height: 8),
@@ -369,7 +369,7 @@ class PriceListModal extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 30, 61, 59),
+        color: const Color.fromARGB(255, 8, 24, 83),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -417,7 +417,7 @@ class PriceListModal extends StatelessWidget {
       icon: const Icon(Icons.calendar_today, size: 18, color: Colors.white),
       label: const Text("Plan Ahead"),
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF009688),
+        backgroundColor: const Color.fromARGB(255, 18, 45, 112),
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),

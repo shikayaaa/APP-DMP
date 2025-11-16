@@ -8,7 +8,7 @@ class PrivacyControlsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 18, 80, 186),
         title: const Text("Privacy Controls"),
         elevation: 0,
       ),
@@ -45,7 +45,7 @@ class PrivacyControlsScreen extends StatelessWidget {
           // Action Buttons
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 124, 186, 176),
+              backgroundColor: const Color.fromARGB(255, 31, 45, 82),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

@@ -31,10 +31,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/backg.png
-    - assets/images/gate.jpg
+    - assets/images/backg.jpg
+    - assets/images/view.jpg
     - assets/images/office.jpg
-    - assets/dmplogofinal.png
+    - assets/images/dmplogofinal.png
     - assets/images/lawn.jpg
     - assets/images/memorialg.jpg
     - assets/images/gardenfam.jpg

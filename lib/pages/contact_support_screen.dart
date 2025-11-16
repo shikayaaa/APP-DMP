@@ -17,9 +17,9 @@ class ContactSupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 132, 192, 185),
+      backgroundColor: const Color.fromARGB(255, 132, 153, 192),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 18, 82, 186),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -63,13 +63,13 @@ class ContactSupportScreen extends StatelessWidget {
             _buildContactCard(
               context: context,
               icon: Icons.phone,
-              iconColor: const Color(0xFF4CAF50),
+              iconColor: const Color.fromARGB(255, 76, 162, 175),
               iconBgColor: const Color(0xFFE8F5E9),
               title: "Call Office",
               subtitle: "Speak with our customer service team",
               contact: "0965-143-2479 / 0956-496-9637",
               buttonText: "Call Now",
-              buttonColor: const Color(0xFF00695C),
+              buttonColor: const Color.fromARGB(255, 0, 53, 105),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Opening phone dialer...")),
@@ -89,7 +89,7 @@ class ContactSupportScreen extends StatelessWidget {
               subtitle: "Send us a detailed message",
               contact: "dumaguetememorialpark@gmail.com",
               buttonText: "Send Email",
-              buttonColor: const Color(0xFF00695C),
+              buttonColor: const Color.fromARGB(255, 0, 26, 105),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Opening email app...")),
@@ -114,7 +114,7 @@ class ContactSupportScreen extends StatelessWidget {
                       children: const [
                         Icon(
                           Icons.access_time,
-                          color: Color(0xFF00695C),
+                          color: Color.fromARGB(255, 0, 5, 105),
                           size: 20,
                         ),
                         SizedBox(width: 8),
@@ -156,7 +156,7 @@ class ContactSupportScreen extends StatelessWidget {
                       children: const [
                         Icon(
                           Icons.location_on,
-                          color: Color(0xFF00695C),
+                          color: Color.fromARGB(255, 0, 21, 105),
                           size: 20,
                         ),
                         SizedBox(width: 8),
@@ -201,9 +201,9 @@ class ContactSupportScreen extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF00695C),
+                          foregroundColor: const Color.fromARGB(255, 0, 23, 105),
                           side: const BorderSide(
-                            color: Color(0xFF00695C),
+                            color: Color.fromARGB(255, 0, 47, 105),
                             width: 1.8,
                           ),
                           shape: RoundedRectangleBorder(

@@ -18,22 +18,22 @@ class _ServicesScreenState extends State<ServicesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 145, 189, 182),
+      backgroundColor: const Color(0xFFE8F0FF), // 🔵 light blue
       appBar: AppBar(
-         automaticallyImplyLeading: false, // ✅ removes back button
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+         automaticallyImplyLeading: false, 
+        backgroundColor: const Color(0xFF0A6CFF), // 🔵 main blue
         elevation: 0,
         title: const Text(
           "Services",
-          style: TextStyle(color: Colors.black), // ✅ changed to black
+          style: TextStyle(color: Colors.white),
         ),
       ),
 
       body: Column(
         children: [
-          // ✅ Top Category Buttons
+          // 🔘 Top Category Buttons
           Container(
-            color: const Color.fromARGB(255, 18, 186, 153),
+            color: const Color(0xFF0A6CFF), // 🔵 blue
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -47,14 +47,14 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
           const SizedBox(height: 10),
 
-          // ✅ Show content depending on category
+          // 🔹 Show content depending on category
           Expanded(child: _buildCategoryContent()),
         ],
       ),
     );
   }
 
-  // 🔘 Reusable Category Button
+  // 🔘 Category Button
   Widget _buildCategoryButton(String category) {
     final bool isSelected = selectedCategory == category;
 
@@ -66,9 +66,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: isSelected
-            ? const Color.fromARGB(255, 35, 85, 81)
+            ? const Color(0xFF0A6CFF) // 🔵 selected blue
             : Colors.white,
-        foregroundColor: isSelected ? Colors.black : Colors.black, // ✅ always black text
+        foregroundColor: isSelected ? Colors.white : Colors.black, 
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -78,7 +78,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
     );
   }
 
-  // 📦 Content depending on selected category
+  // 🔹 Content depending on selected category
   Widget _buildCategoryContent() {
     if (selectedCategory == "Services") {
       return ListView(
@@ -136,12 +136,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black), // ✅ black
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0A6CFF)), // 🔵 title blue
           ),
           const SizedBox(height: 6),
           Text(
             description,
-            style: const TextStyle(color: Colors.black54), // ✅ black shade
+            style: const TextStyle(color: Colors.black54),
           ),
           const SizedBox(height: 12),
           ElevatedButton(
@@ -170,14 +170,14 @@ class _ServicesScreenState extends State<ServicesScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 119, 187, 179),
+              backgroundColor: const Color(0xFF0A6CFF), // 🔵 button blue
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
               buttonText,
-              style: const TextStyle(color: Colors.black), // ✅ black button text
+              style: const TextStyle(color: Colors.white), // 🔵 text white
             ),
           ),
         ],

@@ -21,9 +21,9 @@ class _SettingsScreenState extends State<SecuritysettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
-          const Color.fromARGB(255, 145, 189, 182), // dark teal bg
+          const Color.fromARGB(255, 77, 101, 159), // dark teal bg
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 18, 68, 186),
         title: const Text("Security Settings"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

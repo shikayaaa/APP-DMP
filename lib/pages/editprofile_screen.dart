@@ -31,17 +31,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 18, 46, 186),
         elevation: 0,
         title: const Text(
           "Edit Profile",
           style: TextStyle(
-            color: Colors.black, // ✅ changed from white to black
+            color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white to black
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black), // ✅ black icon
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 255, 255, 255)), // ✅ black icon
           onPressed: () => Navigator.pop(context),
         ),
         bottom: const PreferredSize(
@@ -51,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Text(
               "Update your personal information",
               style: TextStyle(
-                color: Colors.black, // ✅ changed from white70 to black
+                color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white70 to black
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
@@ -69,13 +69,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.teal.shade700,
+                    backgroundColor: const Color.fromARGB(255, 0, 20, 121),
                     child: const Text(
                       "JD",
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black, // ✅ changed from white to black
+                        color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white to black
                       ),
                     ),
                   ),

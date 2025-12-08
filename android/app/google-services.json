@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "120810655315",
+    "firebase_url": "https://dmpdb-8f26e-default-rtdb.firebaseio.com",
+    "project_id": "dmpdb-8f26e",
+    "storage_bucket": "dmpdb-8f26e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120810655315:android:38c6373028ab6540b7c0a6",
+        "android_client_info": {
+          "package_name": "com.example.dmp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120810655315-k1m66849vidkq3l1f3i3j2o9su2f4oc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbkSaGxcV0Z2_sAq8-E4bbdMvqUGqDHDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "120810655315-k1m66849vidkq3l1f3i3j2o9su2f4oc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

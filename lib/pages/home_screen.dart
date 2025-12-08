@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import '../services/database_service.dart';
+import '../models/user_model.dart';
 
 // Correct imports
 import 'pricelist_screen.dart';
@@ -55,8 +59,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  String _userName = "User";
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final currentUser = authService.currentUser;
+
+      if (currentUser != null) {
+        final dbService = DatabaseService();
+        final userProfile = await dbService.getUserProfile(currentUser.uid);
+        setState(() {
+          _userName = userProfile?.displayName ?? currentUser.email?.split('@')[0] ?? "User";
+          _isLoading = false;
+        });
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
+  }
 
   Widget _buildQuickMenuItem(
       BuildContext context, IconData icon, String label, VoidCallback onTap) {
@@ -114,13 +152,21 @@ class HomeTab extends StatelessWidget {
         backgroundColor: Colors.blue, // BLUE
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
-          "Quick Menu",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: _isLoading
+            ? const Text(
+                "Quick Menu",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : Text(
+                "Welcome, $_userName!",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
         actions: [
           Stack(
             children: [

@@ -1,5 +1,7 @@
 import 'package:dmp/pages/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
 import 'forgot_screen.dart';
 import 'signup_screen.dart';
 
@@ -14,8 +16,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false; // ✅ Added loading state
 
-  void _signIn() {
+  // ✅ Updated _signIn with Firebase Authentication
+  Future<void> _signIn() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -26,10 +30,30 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      await authService.signInWithEmail(email, password);
+      
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   void _forgotPassword() {
@@ -198,11 +222,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
 
-                          // ✅ Sign In Button
+                          // ✅ Sign In Button (with loading indicator)
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _signIn,
+                              onPressed: _isLoading ? null : _signIn,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color.fromARGB(255, 0, 40, 121),
                                 padding:
@@ -211,11 +235,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
-                                "Sign In",
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Sign In",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 12),

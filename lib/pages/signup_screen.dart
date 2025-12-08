@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import '../services/database_service.dart';
+import '../models/user_model.dart';
 import 'login_screen.dart'; // ✅ Import your LoginScreen
 
 class SignUpScreen extends StatefulWidget {
@@ -14,8 +18,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false; // ✅ Added loading state
 
-  void _createAccount() {
+  // ✅ Updated _createAccount with Firebase Authentication
+  Future<void> _createAccount() async {
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
     final email = _emailController.text.trim();
@@ -28,9 +34,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Account created for $name")),
-    );
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final userCredential = await authService.registerWithEmail(email, password);
+
+      if (userCredential != null) {
+        // ✅ Create user profile in Firestore with name and phone
+        final dbService = DatabaseService();
+        final newUser = UserModel(
+          uid: userCredential.user!.uid,
+          email: userCredential.user!.email!,
+          displayName: name, // ✅ Save the name
+          photoURL: null,
+          createdAt: DateTime.now(),
+        );
+        await dbService.createUserProfile(newUser);
+
+        // ✅ Optionally save phone number separately
+        await dbService.updateUserProfile(userCredential.user!.uid, {
+          'phone': phone,
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Account created for $name")),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   void _signIn() {
@@ -214,11 +262,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(height: 20),
 
-                          // Create Account Button
+                          // Create Account Button (with loading indicator)
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _createAccount,
+                              onPressed: _isLoading ? null : _createAccount,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.teal.shade700,
                                 padding:
@@ -227,11 +275,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
-                                "Create Account",
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Create Account",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 16),

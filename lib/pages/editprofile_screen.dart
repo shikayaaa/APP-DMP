@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import '../services/database_service.dart';
+import '../models/user_model.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -8,26 +12,154 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final TextEditingController _nameController =
-      TextEditingController(text: "John Doe");
-  final TextEditingController _emailController =
-      TextEditingController(text: "john.doe@example.com");
-  final TextEditingController _phoneController =
-      TextEditingController(text: "+63 912 345 6789");
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _occupationController =
-      TextEditingController(text: "Enter your occupation");
-  final TextEditingController _addressController =
-      TextEditingController(text: "Dumaguete City, Negros Oriental");
-  final TextEditingController _emergencyNameController =
-      TextEditingController(text: "Enter emergency contact name");
-  final TextEditingController _emergencyPhoneController =
-      TextEditingController(text: "+63 912 345 6789");
-  final TextEditingController _bioController =
-      TextEditingController(text: "Tell us about yourself (optional)");
+  final TextEditingController _occupationController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _emergencyNameController = TextEditingController();
+  final TextEditingController _emergencyPhoneController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+
+  bool _isLoading = true;
+  bool _isSaving = false;
+  String? _userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final currentUser = authService.currentUser;
+
+      if (currentUser != null) {
+        _userId = currentUser.uid;
+        final dbService = DatabaseService();
+        final userProfile = await dbService.getUserProfile(currentUser.uid);
+
+        if (userProfile != null) {
+          setState(() {
+            _nameController.text = userProfile.displayName ?? "";
+            _emailController.text = userProfile.email;
+            _phoneController.text = userProfile.phoneNumber ?? "+63 912 345 6789";
+            _dobController.text = userProfile.dateOfBirth ?? "";
+            _occupationController.text = userProfile.occupation ?? "Enter your occupation";
+            _addressController.text = userProfile.address ?? "Dumaguete City, Negros Oriental";
+            _emergencyNameController.text = userProfile.emergencyContactName ?? "Enter emergency contact name";
+            _emergencyPhoneController.text = userProfile.emergencyContactPhone ?? "+63 912 345 6789";
+            _bioController.text = userProfile.bio ?? "Tell us about yourself (optional)";
+            _isLoading = false;
+          });
+        } else {
+          setState(() => _isLoading = false);
+        }
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error loading profile: $e")),
+        );
+      }
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (_userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User not logged in")),
+      );
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final dbService = DatabaseService();
+      
+      // Prepare update data
+      Map<String, dynamic> updateData = {
+        'displayName': _nameController.text.trim(),
+        'phoneNumber': _phoneController.text.trim(),
+        'dateOfBirth': _dobController.text.trim(),
+        'occupation': _occupationController.text.trim(),
+        'address': _addressController.text.trim(),
+        'emergencyContactName': _emergencyNameController.text.trim(),
+        'emergencyContactPhone': _emergencyPhoneController.text.trim(),
+        'bio': _bioController.text.trim(),
+        'updatedAt': DateTime.now(),
+      };
+
+      // Update user profile in Firestore
+      await dbService.updateUserProfile(_userId!, updateData);
+
+      setState(() => _isSaving = false);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Changes Saved Successfully!")),
+        );
+
+        // Return updated data to previous screen
+        Navigator.pop(context, {
+          "name": _nameController.text,
+          "email": _emailController.text,
+          "phone": _phoneController.text,
+          "dob": _dobController.text,
+          "occupation": _occupationController.text,
+          "address": _addressController.text,
+          "emergencyName": _emergencyNameController.text,
+          "emergencyPhone": _emergencyPhoneController.text,
+          "bio": _bioController.text,
+        });
+      }
+    } catch (e) {
+      setState(() => _isSaving = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error saving profile: $e")),
+        );
+      }
+    }
+  }
+
+  String _getInitials(String? name) {
+    if (name == null || name.isEmpty) return "JD";
+    final parts = name.split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFEFF6F5),
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 18, 46, 186),
+          title: const Text(
+            "Edit Profile",
+            style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: Color.fromARGB(255, 18, 46, 186),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6F5),
       appBar: AppBar(
@@ -36,12 +168,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: const Text(
           "Edit Profile",
           style: TextStyle(
-            color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white to black
+            color: Color.fromARGB(255, 255, 255, 255),
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 255, 255, 255)), // ✅ black icon
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 255, 255, 255)),
           onPressed: () => Navigator.pop(context),
         ),
         bottom: const PreferredSize(
@@ -51,7 +183,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Text(
               "Update your personal information",
               style: TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white70 to black
+                color: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
@@ -70,12 +202,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: const Color.fromARGB(255, 0, 20, 121),
-                    child: const Text(
-                      "JD",
-                      style: TextStyle(
+                    child: Text(
+                      _getInitials(_nameController.text),
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 255, 255), // ✅ changed from white to black
+                        color: Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
                   ),
@@ -90,7 +222,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             _sectionCard("Personal Information", [
               _buildTextField("Full Name", _nameController),
               _buildTextField("Email Address", _emailController,
-                  keyboard: TextInputType.emailAddress),
+                  keyboard: TextInputType.emailAddress, enabled: false),
               _buildTextField("Phone Number", _phoneController,
                   keyboard: TextInputType.phone),
               _buildDateField("Date of Birth", _dobController),
@@ -128,11 +260,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.black), // ✅ black icon
+                  onPressed: _isSaving ? null : () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, color: Colors.black),
                   label: const Text(
                     "Cancel",
-                    style: TextStyle(color: Colors.black), // ✅ black text
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
                 ElevatedButton.icon(
@@ -144,27 +276,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Changes Saved!")),
-                    );
-
-                    Navigator.pop(context, {
-                      "name": _nameController.text,
-                      "email": _emailController.text,
-                      "phone": _phoneController.text,
-                      "dob": _dobController.text,
-                      "occupation": _occupationController.text,
-                      "address": _addressController.text,
-                      "emergencyName": _emergencyNameController.text,
-                      "emergencyPhone": _emergencyPhoneController.text,
-                      "bio": _bioController.text,
-                    });
-                  },
-                  icon: const Icon(Icons.save, color: Colors.black), // ✅ black icon
-                  label: const Text(
-                    "Save Changes",
-                    style: TextStyle(color: Colors.black), // ✅ black text
+                  onPressed: _isSaving ? null : _saveProfile,
+                  icon: _isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(Icons.save, color: Colors.black),
+                  label: Text(
+                    _isSaving ? "Saving..." : "Save Changes",
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ],
@@ -175,6 +300,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _dobController.dispose();
+    _occupationController.dispose();
+    _addressController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyPhoneController.dispose();
+    _bioController.dispose();
+    super.dispose();
   }
 
   // 🔹 Section Container
@@ -191,8 +330,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           Text(
             title,
-            style:
-                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           const SizedBox(height: 12),
           ...children,
@@ -203,19 +342,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // 🔹 Input Field
   Widget _buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboard = TextInputType.text, int maxLines = 1}) {
+      {TextInputType keyboard = TextInputType.text, int maxLines = 1, bool enabled = true}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
         maxLines: maxLines,
         keyboardType: keyboard,
-        style: const TextStyle(color: Colors.black), // ✅ black input text
+        enabled: enabled,
+        style: TextStyle(
+          color: enabled ? Colors.black : Colors.black54,
+        ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.black), // ✅ black label
+          labelStyle: const TextStyle(color: Colors.black),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: enabled ? Colors.white : Colors.grey.shade200,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           border: OutlineInputBorder(
@@ -232,11 +374,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
-        style: const TextStyle(color: Colors.black), // ✅ black text
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.black), // ✅ black label
-          suffixIcon: const Icon(Icons.calendar_today, color: Colors.black), // ✅ black icon
+          labelStyle: const TextStyle(color: Colors.black),
+          suffixIcon: const Icon(Icons.calendar_today, color: Colors.black),
           filled: true,
           fillColor: Colors.white,
           contentPadding:

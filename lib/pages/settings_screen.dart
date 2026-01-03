@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'securitysettings_screen.dart';
 import 'privacycontrols_screen.dart';
 import 'appinfo_screen.dart';
-import 'support_screen.dart'; // ✅ Added import for Help & Support screen
+import 'support_screen.dart'; // Help & Support screen
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -11,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 132, 135, 155),
+      backgroundColor: const Color.fromARGB(255, 204, 212, 236),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 18, 52, 186),
         title: const Text("Settings"),
@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
 
-          // ✅ New Data Storage tile
+          // 🔹 Data Storage tile
           _settingsTile(
             context,
             icon: Icons.storage,
@@ -90,7 +90,7 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
 
-          // ✅ Added Help & Support tile
+          // 🔹 Help & Support
           _settingsTile(
             context,
             icon: Icons.help_outline,
@@ -120,30 +120,42 @@ class SettingsScreen extends StatelessWidget {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 2, 77, 73),
+          color: Color.fromARGB(255, 0, 0, 0),
         ),
       ),
     );
   }
 
-  // 🔹 Reusable tile widget
-  Widget _settingsTile(BuildContext context,
-      {required IconData icon,
-      required Color color,
-      required String title,
-      required String subtitle,
-      required VoidCallback onTap}) {
+  // 🔹 Reusable tile widget (with white cards + black text)
+  Widget _settingsTile(
+    BuildContext context, {
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Card(
+      color: Colors.white, // ✅ White Card Background
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.1),
+          backgroundColor: color.withOpacity(0.15),
           child: Icon(icon, color: color),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black, // ✅ Black title text
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.black), // ✅ Black subtitle text
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
         onTap: onTap,
       ),
     );

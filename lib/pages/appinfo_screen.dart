@@ -20,42 +20,48 @@ class AppInfoScreen extends StatelessWidget {
         children: [
           const Text(
             "About Dumaguete Memorial Park App",
-            style: TextStyle(fontSize: 14, color: Colors.black54),
+            style: TextStyle(fontSize: 14, color: Colors.black87),
           ),
           const SizedBox(height: 16),
 
-          // 🔹 App Info Card
           Card(
+            color: Colors.white, // ✅ WHITE CARD
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            child: ListTile(
+            child: const ListTile(
               leading: CircleAvatar(
-                backgroundColor: Colors.green.shade100,
-                child: const Icon(Icons.apartment, color: Color.fromARGB(255, 76, 152, 175)),
+                backgroundColor: Color(0xFFDFF3E6),
+                child: Icon(Icons.apartment,
+                    color: Color.fromARGB(255, 76, 152, 175)),
               ),
-              title: const Text(
+              title: Text(
                 "Dumaguete Memorial Park",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // ✅ BLACK TEXT
+                ),
               ),
-              subtitle: const Text(
-                  "Version 1.0.0\nYour trusted digital companion for managing "
-                  "pre-need cemetery lot plans, payments, and interment services."),
+              subtitle: Text(
+                "Version 1.0.0\nYour trusted digital companion for managing "
+                "pre-need cemetery lot plans, payments, and interment services.",
+                style: TextStyle(color: Colors.black), // ✅ BLACK TEXT
+              ),
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // 🔹 Key Features
           const Text(
             "Key Features",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black, // ✅ Changed to black
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 8),
+
           _buildFeature("Pre-need installment plan management"),
           _buildFeature("Secure payment processing (GCash, Maya, Bank Transfer)"),
           _buildFeature("Digital document management"),
@@ -64,14 +70,12 @@ class AppInfoScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 🔹 Legal & Privacy
           const Text(
             "Legal & Privacy",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
 
-          // ✅ Terms of Service
           _buildNavTile(
             context,
             title: "Terms of Service",
@@ -87,7 +91,6 @@ class AppInfoScreen extends StatelessWidget {
             },
           ),
 
-          // ✅ Privacy Policy
           _buildNavTile(
             context,
             title: "Privacy Policy",
@@ -103,7 +106,6 @@ class AppInfoScreen extends StatelessWidget {
             },
           ),
 
-          // ✅ Data Privacy Act Compliance
           _buildNavTile(
             context,
             title: "Data Privacy Act Compliance",
@@ -121,13 +123,12 @@ class AppInfoScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 🔹 Contact Information (now black text)
           Align(
             alignment: Alignment.center,
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
               child: Card(
-                color: Colors.blue.shade50,
+                color: Colors.white, // ✅ WHITE CARD
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -141,27 +142,19 @@ class AppInfoScreen extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.black, // ✅ Changed to black
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        "Dumaguete Memorial Park & Crematory",
-                        style: TextStyle(color: Colors.black), // ✅ black
-                      ),
-                      Text(
-                        "Bagacay, Dumaguete City, Negros Oriental",
-                        style: TextStyle(color: Colors.black), // ✅ black
-                      ),
+                      Text("Dumaguete Memorial Park & Crematory",
+                          style: TextStyle(color: Colors.black)),
+                      Text("Bagacay, Dumaguete City, Negros Oriental",
+                          style: TextStyle(color: Colors.black)),
                       SizedBox(height: 8),
-                      Text(
-                        "Email: info@dumaguetememorial.com",
-                        style: TextStyle(color: Colors.black), // ✅ black
-                      ),
-                      Text(
-                        "Phone: (035) 422-XXXX",
-                        style: TextStyle(color: Colors.black), // ✅ black
-                      ),
+                      Text("Email: info@dumaguetememorial.com",
+                          style: TextStyle(color: Colors.black)),
+                      Text("Phone: (035) 422-XXXX",
+                          style: TextStyle(color: Colors.black)),
                     ],
                   ),
                 ),
@@ -171,7 +164,6 @@ class AppInfoScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 🔹 Close Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 240, 243, 242),
@@ -196,24 +188,32 @@ class AppInfoScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 Feature with check icon
+  // 🔹 Feature tile
   static Widget _buildFeature(String text) {
-    return ListTile(
-      leading: const Icon(Icons.check_circle, color: Color.fromARGB(255, 76, 175, 173)),
-      title: Text(
-        text,
-        style: const TextStyle(color: Colors.black), // ✅ changed to black
+    return Card(
+      color: Colors.white, // ✅ WHITE
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading:
+            const Icon(Icons.check_circle, color: Color.fromARGB(255, 76, 175, 173)),
+        title: Text(
+          text,
+          style: const TextStyle(color: Colors.black), // ✅ BLACK TEXT
+        ),
       ),
     );
   }
 
-  // 🔹 Navigation Tile
-  static Widget _buildNavTile(BuildContext context,
-      {required String title,
-      required String subtitle,
-      required IconData icon,
-      required VoidCallback onTap}) {
+  // 🔹 Navigation Card Tile
+  static Widget _buildNavTile(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return Card(
+      color: Colors.white, // ✅ WHITE CARD
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
@@ -221,9 +221,18 @@ class AppInfoScreen extends StatelessWidget {
           backgroundColor: Colors.teal.shade50,
           child: Icon(icon, color: const Color.fromARGB(255, 5, 0, 150)),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black, // ✅ BLACK TEXT
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.black), // ✅ BLACK TEXT
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
         onTap: onTap,
       ),
     );

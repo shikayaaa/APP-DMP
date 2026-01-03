@@ -42,7 +42,6 @@ class PrivacyControlsScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Action Buttons
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 31, 45, 82),
@@ -60,22 +59,31 @@ class PrivacyControlsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-         
         ],
       ),
     );
   }
 
-  // 🔹 Reusable privacy info tile
+  // 🔹 White card + black text
   Widget _privacyTile(String title, String subtitle) {
     return Card(
+      color: Colors.white, // ✅ WHITE CARD
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: const Icon(Icons.check_circle, color: Colors.green),
-        title: Text(title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-        subtitle: Text(subtitle),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Colors.black, // ✅ BLACK TEXT
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.black), // ✅ BLACK TEXT
+        ),
       ),
     );
   }

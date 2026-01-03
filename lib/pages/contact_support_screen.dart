@@ -129,11 +129,8 @@ class ContactSupportScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildOfficeHourRow("Monday - Friday", "8:00 AM - 5:00 PM"),
-                    const SizedBox(height: 6),
-                    _buildOfficeHourRow("Saturday", "Closed"),
-                    const SizedBox(height: 6),
-                    _buildOfficeHourRow("Sunday", "Closed"),
+                    _buildOfficeHourRow("Sunday - Monday", "6:00 AM - 7:00 PM"),
+                 
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../models/user_model.dart';
@@ -18,33 +19,77 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserModel? _userProfile;
   bool _isLoading = true;
+  int _activePlansCount = 0;
+  double _totalPaid = 0.0;
+  String _phoneNumber = '';
+  String _address = '';
 
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    _loadAllUserData();
   }
 
-  Future<void> _loadUserProfile() async {
+  Future<void> _loadAllUserData() async {
     try {
       final authService = Provider.of<AuthService>(context, listen: false);
       final currentUser = authService.currentUser;
 
       if (currentUser != null) {
+        // Load user profile
         final dbService = DatabaseService();
         final userProfile = await dbService.getUserProfile(currentUser.uid);
+
+        // Load active plans count
+        final plansSnapshot = await FirebaseFirestore.instance
+            .collection('preNeedAgreements')
+            .where('userId', isEqualTo: currentUser.uid)
+            .where('status', isEqualTo: 'active')
+            .get();
+
+        // Load total paid from payments
+        final paymentsSnapshot = await FirebaseFirestore.instance
+            .collection('payments')
+            .where('userId', isEqualTo: currentUser.uid)
+            .where('status', isEqualTo: 'completed')
+            .get();
+
+        double total = 0.0;
+        for (var doc in paymentsSnapshot.docs) {
+          final amount = (doc.data()['amount'] as num?)?.toDouble() ?? 0.0;
+          total += amount;
+        }
+
+        // Get phone and address from first active plan if available
+        String phone = '+63 912 345 6789';
+        String addr = 'Dumaguete City, Negros Oriental';
+        
+        if (plansSnapshot.docs.isNotEmpty) {
+          final planData = plansSnapshot.docs.first.data();
+          phone = planData['phone'] ?? phone;
+          addr = planData['address'] ?? addr;
+          if (planData['city'] != null && planData['city'].toString().isNotEmpty) {
+            addr = '${planData['address'] ?? ''}, ${planData['city']}';
+          }
+        }
+
         setState(() {
           _userProfile = userProfile;
+          _activePlansCount = plansSnapshot.docs.length;
+          _totalPaid = total;
+          _phoneNumber = phone;
+          _address = addr;
           _isLoading = false;
         });
       }
     } catch (e) {
+      print('Error loading user data: $e');
       setState(() => _isLoading = false);
     }
   }
 
   String _getInitials(String? name) {
-    if (name == null || name.isEmpty) return "JD";
+    if (name == null || name.isEmpty) return "U";
     final parts = name.split(' ');
     if (parts.length >= 2) {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
@@ -52,35 +97,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return name[0].toUpperCase();
   }
 
+  String _formatCurrency(double value) {
+    return '₱${value.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    )}';
+  }
+
   Future<void> _handleSignOut() async {
     try {
-      // Show confirmation dialog
       final shouldSignOut = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Sign Out'),
-          content: const Text('Are you sure you want to sign out?'),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Sign Out',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            'Are you sure you want to sign out?',
+            style: TextStyle(color: Colors.black87),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Sign Out'),
+              child: const Text(
+                'Sign Out',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
       );
 
       if (shouldSignOut == true && mounted) {
-        // Show loading indicator
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => const Center(
-            child: CircularProgressIndicator(color: Colors.white),
+            child: CircularProgressIndicator(color: Colors.blue),
           ),
         );
 
@@ -88,10 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await authService.signOut();
 
         if (mounted) {
-          // Close loading dialog
           Navigator.pop(context);
-          
-          // Navigate to login screen
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -101,10 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } catch (e) {
       if (mounted) {
-        // Close loading dialog if open
         Navigator.pop(context);
-        
-        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Sign out failed: $e'),
@@ -119,21 +184,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: const Color(0xFFE8F0FF),
+        backgroundColor: Colors.blue.shade50,
         body: const Center(
-          child: CircularProgressIndicator(color: Color(0xFF0A6CFF)),
+          child: CircularProgressIndicator(color: Colors.blue),
         ),
       );
     }
 
-    final displayName = _userProfile?.displayName ?? "John Doe";
-    final email = _userProfile?.email ?? "john.doe@example.com";
+    final displayName = _userProfile?.displayName ?? 
+                        FirebaseAuth.instance.currentUser?.email?.split('@')[0] ?? 
+                        "User";
+    final email = _userProfile?.email ?? 
+                  FirebaseAuth.instance.currentUser?.email ?? 
+                  "user@example.com";
     final initials = _getInitials(displayName);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F0FF),
+      backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A6CFF),
+        backgroundColor: Colors.blue,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
@@ -143,6 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+       
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(28),
           child: Padding(
@@ -157,7 +227,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -179,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: const Color(0xFF0A6CFF),
+                  backgroundColor: Colors.blue,
                   child: Text(
                     initials,
                     style: const TextStyle(
@@ -199,7 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0A6CFF),
+                          color: Colors.blue,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -208,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: const TextStyle(color: Colors.black54),
                       ),
                       Text(
-                        _userProfile?.uid.substring(0, 8) ?? "+63 912 345 6789",
+                        _phoneNumber,
                         style: const TextStyle(color: Colors.black54),
                       ),
                     ],
@@ -220,35 +289,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 16),
 
-          // Plans and Payment Info
+          // Plans and Payments (FIREBASE DATA)
           Row(
             children: [
               Expanded(
-                child: _infoCard("2", "Active Plans"),
+                child: _infoCard(
+                  _activePlansCount.toString(),
+                  "Active Plans",
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _infoCard("₱25,000", "Total Paid"),
+                child: _infoCard(
+                  _formatCurrency(_totalPaid),
+                  "Total Paid",
+                ),
               ),
             ],
           ),
 
           const SizedBox(height: 16),
 
-          // Contact Information
+          // Contact Info
           _sectionTitle("Contact Information"),
           _contactTile(Icons.email, email, "Email Address"),
-          _contactTile(Icons.phone, "+63 912 345 6789", "Phone Number"),
-          _contactTile(Icons.location_on, "Dumaguete City, Negros Oriental", "Address"),
+          _contactTile(Icons.phone, _phoneNumber, "Phone Number"),
+          _contactTile(Icons.location_on, _address, "Address"),
           _contactTile(
             Icons.calendar_today,
-            "Member since ${_userProfile?.createdAt.year ?? 2024}",
+            "Member since ${_userProfile?.createdAt.year ?? DateTime.now().year}",
             "Account Created",
           ),
 
           const SizedBox(height: 16),
 
-          // Settings and Options
+          // Action Tiles
           _actionTile(
             context,
             Icons.edit,
@@ -257,10 +332,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen()),
               );
             },
           ),
+
           _actionTile(
             context,
             Icons.settings,
@@ -269,14 +346,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const SettingsScreen()),
               );
             },
           ),
 
           const SizedBox(height: 8),
 
-          // Sign Out Button - FIXED
+          // Sign Out Button
           Container(
             margin: const EdgeInsets.symmetric(vertical: 6),
             decoration: BoxDecoration(
@@ -295,16 +373,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: _handleSignOut,
-                child: ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text(
+                child: const ListTile(
+                  leading: Icon(Icons.logout, color: Colors.red),
+                  title: Text(
                     "Sign Out",
                     style: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: const Text(
+                  subtitle: Text(
                     "Sign out of your account",
                     style: TextStyle(color: Colors.black54),
                   ),
@@ -315,7 +393,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 20),
 
-          // Footer
           const Center(
             child: Text(
               "Dumaguete Memorial Park v1.0.0\n© 2024 All rights reserved",
@@ -342,7 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0A6CFF),
+              color: Colors.blue,
             ),
           ),
           const SizedBox(height: 4),
@@ -363,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF0A6CFF),
+          color: Colors.blue,
         ),
       ),
     );
@@ -377,7 +454,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF0A6CFF)),
+        leading: Icon(icon, color: Colors.blue),
         title: Text(
           value,
           style: const TextStyle(color: Colors.black),
@@ -404,7 +481,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF0A6CFF)),
+        leading: Icon(icon, color: Colors.blue),
         title: Text(
           title,
           style: const TextStyle(color: Colors.black),
@@ -413,7 +490,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           subtitle,
           style: const TextStyle(color: Colors.black54),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
+        trailing:
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
         onTap: onTap,
       ),
     );

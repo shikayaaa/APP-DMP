@@ -30,18 +30,19 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        
         title: 'DMP App',
         theme: ThemeData(
           scaffoldBackgroundColor: const Color(0xFF0B0B0D), // deep black
           colorScheme: ColorScheme.dark(
-            primary: const Color(0xFF00FF9C), // neon green accent
+            primary: const Color.fromARGB(255, 129, 159, 214), // neon green accent
             secondary: const Color(0xFF00C986),
             surface: const Color(0xFF111113),
             background: const Color(0xFF0B0B0D),
           ),
           textTheme: const TextTheme(
-            bodyLarge: TextStyle(color: Colors.white),
-            bodyMedium: TextStyle(color: Colors.white70),
+            bodyLarge: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+            bodyMedium: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
           ),
           useMaterial3: true,
         ),

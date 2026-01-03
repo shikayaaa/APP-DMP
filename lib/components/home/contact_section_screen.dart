@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ContactSectionScreen extends StatefulWidget {
   const ContactSectionScreen({super.key});
@@ -18,6 +20,9 @@ class _ContactSectionState extends State<ContactSectionScreen> {
 
   bool _inView = false;
   bool _isSubmitting = false;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final List<_ContactInfo> _contactInfo = [
     _ContactInfo(
@@ -65,20 +70,51 @@ class _ContactSectionState extends State<ContactSectionScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
-    await Future.delayed(const Duration(milliseconds: 1400));
 
-    if (!mounted) return;
-    setState(() {
-      _isSubmitting = false;
-      _nameCtr.clear();
-      _emailCtr.clear();
-      _phoneCtr.clear();
-      _messageCtr.clear();
-    });
+    try {
+      final user = _auth.currentUser;
+      
+      // Save to Firestore
+      await _firestore.collection('contacts').add({
+        'name': _nameCtr.text.trim(),
+        'email': _emailCtr.text.trim(),
+        'phone': _phoneCtr.text.trim(),
+        'message': _messageCtr.text.trim(),
+        'userId': user?.uid,
+        'userEmail': user?.email,
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+        'isRead': false,
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Message sent — we will contact you soon.')),
-    );
+      if (!mounted) return;
+      
+      setState(() {
+        _isSubmitting = false;
+        _nameCtr.clear();
+        _emailCtr.clear();
+        _phoneCtr.clear();
+        _messageCtr.clear();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Message sent successfully — we will contact you soon.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      setState(() => _isSubmitting = false);
+      
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error sending message: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _openMap() async {
@@ -197,19 +233,19 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                               key: _formKey,
                               child: Column(
                                 children: [
-                                  _textField(_nameCtr, 'Full Name', 'John Doe'),
+                                  _textField(_nameCtr, 'Full Name', 'Enter your full name'),
                                   const SizedBox(height: 12),
                                   _textField(
                                     _emailCtr,
                                     'Email Address',
-                                    'john@example.com',
+                                    'Enter your email address',
                                     type: TextInputType.emailAddress,
                                   ),
                                   const SizedBox(height: 12),
                                   _textField(
                                     _phoneCtr,
                                     'Phone Number',
-                                    '+63 917 123 4567',
+                                    '+Enter your number',
                                     type: TextInputType.phone,
                                   ),
                                   const SizedBox(height: 12),
@@ -241,7 +277,7 @@ class _ContactSectionState extends State<ContactSectionScreen> {
                                               child: CircularProgressIndicator(
                                                 strokeWidth: 2.2,
                                                 valueColor:
-                                                    AlwaysStoppedAnimation(Colors.white),
+                                                    AlwaysStoppedAnimation(Color(0xFF00204A)),
                                               ),
                                             )
                                           : Row(

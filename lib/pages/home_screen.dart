@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../models/user_model.dart';
 
-// Correct imports
+// Screens
 import 'pricelist_screen.dart';
 import 'intermentrequest_screen.dart';
 import 'myplans_screen.dart';
@@ -45,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onNavTapped,
-        selectedItemColor: Colors.blue.shade800, // BLUE
+        selectedItemColor: Colors.blue.shade800,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
@@ -69,23 +71,27 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   String _userName = "User";
   bool _isLoading = true;
+  List<Map<String, dynamic>> _recentActivities = [];
 
   @override
   void initState() {
     super.initState();
-    _loadUserName();
+    _loadUserData();
+    _loadRecentActivities();
   }
 
-  Future<void> _loadUserName() async {
+  Future<void> _loadUserData() async {
     try {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      final currentUser = authService.currentUser;
+      final user = FirebaseAuth.instance.currentUser;
 
-      if (currentUser != null) {
+      if (user != null) {
         final dbService = DatabaseService();
-        final userProfile = await dbService.getUserProfile(currentUser.uid);
+        final userProfile = await dbService.getUserProfile(user.uid);
+
         setState(() {
-          _userName = userProfile?.displayName ?? currentUser.email?.split('@')[0] ?? "User";
+          _userName = userProfile?.displayName ??
+              user.email?.split('@')[0] ??
+              "User";
           _isLoading = false;
         });
       } else {
@@ -96,6 +102,75 @@ class _HomeTabState extends State<HomeTab> {
     }
   }
 
+  Future<void> _loadRecentActivities() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      // Get recent payments
+      final paymentsSnapshot = await FirebaseFirestore.instance
+          .collection('payments')
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('paidAt', descending: true)
+          .limit(3)
+          .get();
+
+      List<Map<String, dynamic>> activities = [];
+
+      for (var doc in paymentsSnapshot.docs) {
+        final data = doc.data();
+        activities.add({
+          'type': 'payment',
+          'title': 'Payment Successful',
+          'subtitle': '${_formatDate(data['paidAt'])} • ${_formatCurrency((data['amount'] as num?)?.toDouble() ?? 0.0)}',
+          'icon': Icons.check_circle,
+          'color': Colors.green,
+        });
+      }
+
+      // Get next payment due
+      final agreementSnapshot = await FirebaseFirestore.instance
+          .collection('preNeedAgreements')
+          .where('userId', isEqualTo: user.uid)
+          .where('status', isEqualTo: 'active')
+          .limit(1)
+          .get();
+
+      if (agreementSnapshot.docs.isNotEmpty) {
+        final agreement = agreementSnapshot.docs.first.data();
+        activities.add({
+          'type': 'reminder',
+          'title': 'Payment Reminder',
+          'subtitle': 'Next due: ${agreement['nextPaymentDate'] ?? 'TBD'}',
+          'icon': Icons.alarm,
+          'color': Colors.blue,
+        });
+      }
+
+      setState(() {
+        _recentActivities = activities;
+      });
+    } catch (e) {
+      // Silently fail - recent activities are optional
+      print('Error loading activities: $e');
+    }
+  }
+
+  String _formatCurrency(double value) {
+    return '₱${value.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    )}';
+  }
+
+  String _formatDate(Timestamp? timestamp) {
+    if (timestamp == null) return 'Unknown';
+    final date = timestamp.toDate();
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  }
+
   Widget _buildQuickMenuItem(
       BuildContext context, IconData icon, String label, VoidCallback onTap) {
     return InkWell(
@@ -104,7 +179,7 @@ class _HomeTabState extends State<HomeTab> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.blue, // BLUE BOX
+          color: Colors.blue,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -126,6 +201,7 @@ class _HomeTabState extends State<HomeTab> {
   Widget _buildRecentActivity(
       String title, String subtitle, IconData icon, Color color) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
@@ -134,8 +210,17 @@ class _HomeTabState extends State<HomeTab> {
           backgroundColor: color.withOpacity(0.2),
           child: Icon(icon, color: color),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.black87),
+        ),
       ),
     );
   }
@@ -143,13 +228,12 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final double contentWidth =
-        screenWidth > 1000 ? 800 : (screenWidth * 0.9);
+    final double contentWidth = screenWidth > 1000 ? 800 : (screenWidth * 0.9);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 180, 205, 255), // LIGHT BLUE BG
+      backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.blue, // BLUE
+        backgroundColor: Colors.blue,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: _isLoading
@@ -181,26 +265,26 @@ class _HomeTabState extends State<HomeTab> {
                   );
                 },
               ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Text(
-                    "2",
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+              if (_recentActivities.isNotEmpty)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      _recentActivities.length.toString(),
+                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ],
       ),
-
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -209,7 +293,6 @@ class _HomeTabState extends State<HomeTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Quick Menu
                 GridView.count(
                   crossAxisCount: screenWidth > 900 ? 4 : 2,
                   shrinkWrap: true,
@@ -218,8 +301,8 @@ class _HomeTabState extends State<HomeTab> {
                   crossAxisSpacing: 14,
                   childAspectRatio: 1.2,
                   children: [
-                    _buildQuickMenuItem(
-                        context, Icons.shopping_cart, "Buy a Lot", () {
+                    _buildQuickMenuItem(context, Icons.shopping_cart,
+                        "Buy a Lot", () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -241,8 +324,7 @@ class _HomeTabState extends State<HomeTab> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const IntermentRequestScreen(),
+                          builder: (context) => const IntermentRequestScreen(),
                         ),
                       );
                     }),
@@ -260,13 +342,12 @@ class _HomeTabState extends State<HomeTab> {
 
                 const SizedBox(height: 24),
 
-                // Contact & Support Button
                 SizedBox(
                   width: 350,
                   height: 90,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // BLUE
+                      backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -295,23 +376,38 @@ class _HomeTabState extends State<HomeTab> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Recent Activity",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                 ),
                 const SizedBox(height: 12),
 
-                _buildRecentActivity(
-                  "Payment Successful",
-                  "Feb 15, 2024 • ₱2,500",
-                  Icons.check_circle,
-                  Colors.green,
-                ),
-                _buildRecentActivity(
-                  "Payment Reminder",
-                  "Next due: March 15, 2024",
-                  Icons.alarm,
-                  Colors.blue,
-                ),
+                if (_recentActivities.isEmpty)
+                  Card(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: const [
+                          Icon(Icons.inbox, size: 48, color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text(
+                            'No recent activities',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  ..._recentActivities.map((activity) => _buildRecentActivity(
+                        activity['title'],
+                        activity['subtitle'],
+                        activity['icon'],
+                        activity['color'],
+                      )),
               ],
             ),
           ),

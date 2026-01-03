@@ -34,7 +34,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: const Color.fromARGB(255, 231, 217, 217).withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 4))
         ],
@@ -313,7 +313,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
       backgroundColor: Colors.teal.shade50,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 16, 118),
-        iconTheme: const IconThemeData(color: Colors.black), // changed to black
+        iconTheme: const IconThemeData(color: Color.fromARGB(255, 255, 255, 255)), // changed to black
         title: const Text(
           "Price List",
           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold), // changed

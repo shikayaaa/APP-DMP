@@ -1,13 +1,123 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
-// Make sure you have this file in your project
-// import 'interment_requirements_screen.dart';
-
-class UpcomingScreen extends StatelessWidget {
+class UpcomingScreen extends StatefulWidget {
   const UpcomingScreen({super.key});
 
   @override
+  State<UpcomingScreen> createState() => _UpcomingScreenState();
+}
+
+class _UpcomingScreenState extends State<UpcomingScreen> {
+  bool _isLoading = true;
+  Map<String, dynamic>? _upcomingInterment;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUpcomingInterment();
+  }
+
+  Future<void> _loadUpcomingInterment() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        setState(() {
+          _errorMessage = 'Please log in to view upcoming interments';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Get approved requests with future dates
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('interment_requests')
+          .where('userId', isEqualTo: user.uid)
+          .where('status', isEqualTo: 'Approved')
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        setState(() {
+          _errorMessage = 'No upcoming interments scheduled';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Get the most recent approved request
+      final doc = querySnapshot.docs.first;
+      final data = doc.data();
+      data['id'] = doc.id;
+
+      setState(() {
+        _upcomingInterment = data;
+        _isLoading = false;
+        _errorMessage = null;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error loading upcoming interments: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return 'Date not set';
+    try {
+      final parts = dateStr.split('/');
+      if (parts.length == 3) {
+        final month = int.parse(parts[0]);
+        final day = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+        final date = DateTime(year, month, day);
+        return DateFormat('EEEE, MMMM dd, yyyy').format(date);
+      }
+      return dateStr;
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.event_busy, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage!,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _loadUpcomingInterment,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final interment = _upcomingInterment!;
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -25,16 +135,17 @@ class UpcomingScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Header: Name + Status
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Maria Santos Dela Cruz",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black, // ✅ changed to black
+              Expanded(
+                child: Text(
+                  interment['deceasedName'] ?? 'Unknown',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               Container(
@@ -43,9 +154,9 @@ class UpcomingScreen extends StatelessWidget {
                   color: Colors.green.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  "Confirmed",
-                  style: TextStyle(
+                child: Text(
+                  interment['status'] ?? 'Confirmed',
+                  style: const TextStyle(
                     color: Colors.green,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -54,16 +165,12 @@ class UpcomingScreen extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 6),
-          const Text(
-            "Garden Family Estate • Block B, Lot 12",
-            style: TextStyle(color: Colors.black54),
+          Text(
+            "${interment['section'] ?? 'Unknown'} • Block ${interment['block'] ?? 'N/A'}, Lot ${interment['lotNumber'] ?? 'N/A'}",
+            style: const TextStyle(color: Colors.black54),
           ),
-
           const SizedBox(height: 16),
-
-          // 🔹 Date Box
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -78,17 +185,28 @@ class UpcomingScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        "Monday, March 25, 2024",
-                        style: TextStyle(
+                        _formatDate(interment['preferredDate']),
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
-                          color: Colors.black, // ✅ black
+                          color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 4),
-                      Text(
+                      if (interment['preferredTime'] != null &&
+                          interment['preferredTime'].toString().isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          interment['preferredTime'],
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 4),
+                      const Text(
                         "Please arrive 30 minutes before the scheduled time",
                         style: TextStyle(fontSize: 12, color: Colors.black54),
                       ),
@@ -98,26 +216,61 @@ class UpcomingScreen extends StatelessWidget {
               ],
             ),
           ),
-
+          if (interment['additionalNotes'] != null &&
+              interment['additionalNotes'].toString().isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              "Note: ${interment['additionalNotes']}",
+              style: const TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.black87,
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
-          const Text(
-            "Note: Morning service preferred",
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black87,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Contact Person:",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  interment['contactPersonName'] ?? 'N/A',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  interment['phoneNumber'] ?? 'N/A',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // 🔹 Action Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () {
-                  // 👉 Navigate to Interment Requirements Screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -126,9 +279,8 @@ class UpcomingScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 105, 185, 177),
-                  foregroundColor: Colors.black, // ✅ text now black
+                  backgroundColor: const Color.fromARGB(255, 105, 185, 177),
+                  foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -145,7 +297,6 @@ class UpcomingScreen extends StatelessWidget {
 
 // ========================================
 // INTERMENT REQUIREMENTS SCREEN
-// Save this as: interment_requirements_screen.dart
 // ========================================
 
 class IntermentRequirementsScreen extends StatelessWidget {
@@ -154,7 +305,7 @@ class IntermentRequirementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200], // ✅ light background instead of dark
+      backgroundColor: Colors.grey[200],
       body: Center(
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -173,7 +324,6 @@ class IntermentRequirementsScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -190,40 +340,34 @@ class IntermentRequirementsScreen extends StatelessWidget {
                     const Text(
                       'Interment Requirements',
                       style: TextStyle(
-                        color: Colors.black, // ✅ changed from white
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     IconButton(
-                      icon:
-                          const Icon(Icons.close, color: Colors.black, size: 20),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                      onPressed: () => Navigator.pop(context),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
                   ],
                 ),
               ),
-
-              // Content
               Flexible(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Please ensure you have the following documents ready for the interment service:',
                         style: TextStyle(
-                          color: Colors.black87, // ✅ black
+                          color: Colors.black87,
                           fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       const RequirementCard(
                         title: 'Death Certificate',
                         subtitle: 'Original copy from the civil registrar',
@@ -233,7 +377,6 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         iconColor: Color(0xFF059669),
                       ),
                       const SizedBox(height: 12),
-
                       const RequirementCard(
                         title: 'Burial Permit',
                         subtitle: 'Issued by the local health office',
@@ -243,7 +386,6 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         iconColor: Color(0xFF059669),
                       ),
                       const SizedBox(height: 12),
-
                       const RequirementCard(
                         title: 'Medical Certificate',
                         subtitle: 'Cause of death from attending physician',
@@ -253,7 +395,6 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         iconColor: Color(0xFF2563EB),
                       ),
                       const SizedBox(height: 12),
-
                       const RequirementCard(
                         title: 'Valid ID of Claimant',
                         subtitle: 'Government-issued identification',
@@ -263,7 +404,6 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         iconColor: Color(0xFF2563EB),
                       ),
                       const SizedBox(height: 12),
-
                       const RequirementCard(
                         title: 'Proof of Lot Ownership',
                         subtitle: 'Contract or certificate of ownership',
@@ -272,10 +412,7 @@ class IntermentRequirementsScreen extends StatelessWidget {
                         textColor: Color(0xFF92400E),
                         iconColor: Color(0xFFD97706),
                       ),
-
                       const SizedBox(height: 20),
-
-                      // Note Section
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -284,13 +421,13 @@ class IntermentRequirementsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                              color: Colors.black87, // ✅ black
+                          text: const TextSpan(
+                            style: TextStyle(
+                              color: Colors.black87,
                               fontSize: 13,
                               height: 1.5,
                             ),
-                            children: const [
+                            children: [
                               TextSpan(
                                 text: 'Note: ',
                                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -303,20 +440,15 @@ class IntermentRequirementsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
-                      // Close Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => Navigator.pop(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color.fromARGB(255, 146, 145, 189),
-                            foregroundColor: Colors.black, // ✅ black text
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),

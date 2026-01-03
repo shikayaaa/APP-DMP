@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../models/user_model.dart';
-import 'login_screen.dart'; // ✅ Import your LoginScreen
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,9 +18,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isLoading = false; // ✅ Added loading state
+  bool _isLoading = false;
 
-  // ✅ Updated _createAccount with Firebase Authentication
   Future<void> _createAccount() async {
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
@@ -41,39 +40,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final userCredential = await authService.registerWithEmail(email, password);
 
       if (userCredential != null) {
-        // ✅ Create user profile in Firestore with name and phone
         final dbService = DatabaseService();
         final newUser = UserModel(
           uid: userCredential.user!.uid,
           email: userCredential.user!.email!,
-          displayName: name, // ✅ Save the name
+          displayName: name,
           photoURL: null,
           createdAt: DateTime.now(),
         );
-        await dbService.createUserProfile(newUser);
 
-        // ✅ Optionally save phone number separately
+        await dbService.createUserProfile(newUser);
         await dbService.updateUserProfile(userCredential.user!.uid, {
           'phone': phone,
         });
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Account created for $name")),
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
-        }
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Account created for $name")),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -94,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/backg.jpg"), // ✅ same as login
+            image: AssetImage("assets/images/backg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -104,7 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // ✅ Logo and title (same as login)
+                // LOGO
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -126,27 +120,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // TITLE
                 const Text(
                   "DUMAGUETE",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
-                    color: Color.fromARGB(255, 72, 169, 161),
+                    color: Color.fromARGB(255, 0, 45, 150), // BLUE (match login)
                   ),
                 ),
                 const Text(
                   "Memorial Park",
-                  style: TextStyle(
-                      fontSize: 14, color: Color.fromARGB(179, 11, 97, 80)),
+                  style:
+                      TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 45, 150)),
                 ),
                 const SizedBox(height: 24),
 
-                // ✅ Centered & Smaller Card (same as login)
+                // CARD
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 400),
                   child: Card(
-                    color: Colors.white, // ✅ no black background
+                    color: Colors.white,
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -161,114 +157,55 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 72, 169, 161),
+                              color: Color.fromARGB(255, 0, 45, 150), // BLUE
                             ),
                           ),
                           const SizedBox(height: 4),
                           const Text(
                             "Join Dumaguete Memorial Park",
-                            style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
                           ),
                           const SizedBox(height: 24),
 
-                          // Full Name
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: TextField(
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.person_outline),
-                                hintText: "Enter your full name",
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                              ),
-                            ),
+                          // TEXTFIELDS — all use BLUE background
+                          buildInputField(
+                            controller: _nameController,
+                            icon: Icons.person_outline,
+                            hint: "Enter your full name",
                           ),
                           const SizedBox(height: 16),
 
-                          // Phone
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: TextField(
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.phone_outlined),
-                                hintText: "+63 912 345 6789",
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                              ),
-                            ),
+                          buildInputField(
+                            controller: _phoneController,
+                            icon: Icons.phone_outlined,
+                            hint: "+63 912 345 6789",
+                            keyboard: TextInputType.phone,
                           ),
                           const SizedBox(height: 16),
 
-                          // Email
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: TextField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.email_outlined),
-                                hintText: "Enter your email",
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                              ),
-                            ),
+                          buildInputField(
+                            controller: _emailController,
+                            icon: Icons.email_outlined,
+                            hint: "Enter your email",
+                            keyboard: TextInputType.emailAddress,
                           ),
                           const SizedBox(height: 16),
 
-                          // Password
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: TextField(
-                              controller: _passwordController,
-                              obscureText: _obscurePassword,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-                                hintText: "Enter your password",
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                              ),
-                            ),
-                          ),
+                          buildPasswordField(),
+
                           const SizedBox(height: 20),
 
-                          // Create Account Button (with loading indicator)
+                          // BUTTON
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: _isLoading ? null : _createAccount,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.teal.shade700,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 0, 40, 121), // BLUE button
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(
@@ -293,19 +230,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Sign In text
                           GestureDetector(
                             onTap: _signIn,
                             child: const Text.rich(
                               TextSpan(
                                 text: "Already have an account? ",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 90, 90, 90)),
+                                style:
+                                    TextStyle(color: Color.fromARGB(255, 90, 90, 90)),
                                 children: [
                                   TextSpan(
                                     text: "Sign in",
                                     style: TextStyle(
-                                      color: Colors.teal,
+                                      color: Color.fromARGB(255, 0, 45, 150), // BLUE
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -321,6 +257,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // -------------------------
+  // REUSABLE INPUT FIELDS
+  // -------------------------
+
+  Widget buildInputField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 54, 106, 170), // BLUE background (same as login)
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboard,
+        style: const TextStyle(color: Colors.white), // white text
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.white),
+          hintText: hint,
+          hintStyle: const TextStyle(color: Colors.white70),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget buildPasswordField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 54, 106, 170), // BLUE
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        controller: _passwordController,
+        obscureText: _obscurePassword,
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              setState(() => _obscurePassword = !_obscurePassword);
+            },
+          ),
+          hintText: "Enter your password",
+          hintStyle: const TextStyle(color: Colors.white70),
+          border: InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
       ),
     );

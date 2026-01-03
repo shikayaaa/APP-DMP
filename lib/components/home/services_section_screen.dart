@@ -327,7 +327,7 @@ class _ServiceCard extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 children: [
-                  Icon(LucideIcons.check, size: 18, color: gradientColors[0]),
+Icon(LucideIcons.check, size: 18, color: Colors.white),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(

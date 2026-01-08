@@ -1,30 +1,223 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
+// ✅ CONDITIONAL IMPORT - Only imports on web
+import 'dart:html' if (dart.library.io) 'dart:io' as web_html;
 
-
-class DeedOfSaleScreen extends StatelessWidget {
+class DeedOfSaleScreen extends StatefulWidget {
   const DeedOfSaleScreen({super.key});
 
   @override
+  State<DeedOfSaleScreen> createState() => _DeedOfSaleScreenState();
+}
+
+class _DeedOfSaleScreenState extends State<DeedOfSaleScreen> {
+  bool _isLoading = true;
+  Map<String, dynamic>? _contractData;
+  Map<String, dynamic>? _userData;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContractData();
+  }
+
+  Future<void> _loadContractData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      
+      if (user == null) {
+        setState(() {
+          _errorMessage = 'Please log in to view your contract';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Get user data
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      // Get contract data
+      final contractQuery = await FirebaseFirestore.instance
+          .collection('preNeedAgreements')
+          .where('userId', isEqualTo: user.uid)
+          .where('status', isEqualTo: 'active')
+          .limit(1)
+          .get();
+
+      if (contractQuery.docs.isEmpty) {
+        setState(() {
+          _errorMessage = 'No active contract found';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      setState(() {
+        _userData = userDoc.data();
+        _contractData = contractQuery.docs.first.data();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error loading contract: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
+  }
+String _formatCurrency(dynamic value) {
+  if (value is num) {
+    return value.toStringAsFixed(2).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
+  }
+
+  if (value is String) {
+    final numValue = double.tryParse(value.replaceAll(RegExp(r'[₱,\s]'), ''));
+    if (numValue != null) {
+      return numValue.toStringAsFixed(2).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]},',
+      );
+    }
+  }
+
+  return '0.00';
+}
+
+
+  String _getCurrentDate() {
+    final now = DateTime.now();
+    final months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return '${months[now.month - 1]} ${now.day}, ${now.year}';
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 135, 177, 231),
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 10, 35, 172),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            'Deed of Sale & Perpetual Care',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator(color: Colors.white)),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 135, 177, 231),
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 10, 35, 172),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            'Deed of Sale & Perpetual Care',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.white),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Extract data with fallbacks
+    final userName = _userData?['displayName'] ?? 
+                     _userData?['fullName'] ?? 
+                     _contractData?['client'] ?? 
+                     'N/A';
+    
+    final userAddress = _userData?['address'] ?? 
+                        _contractData?['address'] ?? 
+                        'N/A';
+    
+    final userPhone = _userData?['phoneNumber'] ?? 
+                      _contractData?['contact'] ?? 
+                      'N/A';
+    
+    final userEmail = _userData?['email'] ?? 
+                      _contractData?['email'] ?? 
+                      'N/A';
+
+    final lotCategory = _contractData?['lotCategory'] ?? 
+                        _contractData?['location'] ?? 
+                        'Garden Family Estate';
+    
+    final lotNumber = _contractData?['lotNumber'] ?? 
+                      _contractData?['lot'] ?? 
+                      'N/A';
+    
+    final lotSize = _contractData?['lotSize'] ?? '2m x 1m';
+
+    final totalPrice = _contractData?['totalCost'] ?? 
+                       _contractData?['totalAmount'] ?? 
+                       0;
+    
+    final downPayment = _contractData?['initialPayment'] ?? 
+                        _contractData?['downPayment'] ?? 
+                        0;
+    
+    final monthlyPayment = _contractData?['monthlyPayment'] ?? 0;
+    final paymentTerm = _contractData?['paymentTerm'] ?? '12 months';
+    final remainingBalance = _contractData?['remainingBalance'] ?? 
+                            (totalPrice - downPayment);
+
+    final contractDate = _contractData?['startDate'] ?? _getCurrentDate();
+    final contractId = _contractData?['contractId'] ?? 'N/A';
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 135, 211, 204),
+      backgroundColor: const Color.fromARGB(255, 135, 177, 231),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 186, 153),
+        backgroundColor: const Color.fromARGB(255, 10, 35, 172),
         elevation: 0,
         title: const Text(
           'Deed of Sale & Perpetual Care',
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.download_rounded),
-            onPressed: () async {
-              await _generateAndSavePdf(context);
-            },
+            onPressed: () => _generateAndSavePdf(context),
           ),
         ],
       ),
@@ -33,9 +226,9 @@ class DeedOfSaleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Garden Family Estate',
-              style: TextStyle(
+            Text(
+              lotCategory,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -82,34 +275,36 @@ class DeedOfSaleScreen extends StatelessWidget {
                       letterSpacing: 0.5,
                     ),
                   ),
+                  Text(
+                    'Contract ID: $contractId',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                   const Divider(thickness: 1, height: 20),
 
                   _sectionTitle('PURCHASER INFORMATION'),
                   _infoBlock({
-                    'Name': 'Juan Carlos Dela Cruz',
-                    'Address': '123 Rizal Boulevard, Dumaguete City',
-                    'Contact': '0965-743-2479',
-                    'Email': 'juan.delacruz@gmail.com',
+                    'Name': userName,
+                    'Address': userAddress,
+                    'Contact': userPhone,
+                    'Email': userEmail,
                   }),
 
                   const SizedBox(height: 12),
                   _sectionTitle('LOT DETAILS'),
                   _infoBlock({
-                    'Section': 'Garden Family Estate',
-                    'Block': 'B',
-                    'Lot Number': '12',
-                    'Area': '6 square meters',
+                    'Section': lotCategory,
+                    'Lot Number': lotNumber,
+                    'Area': lotSize,
                   }),
 
                   const SizedBox(height: 12),
                   _sectionTitle('FINANCIAL DETAILS'),
                   _infoBlock({
-                    'Total Contract Price': '₱75,000.00',
-                    'Down Payment': '₱15,000.00',
-                    'Balance': '₱60,000.00',
-                    'Monthly Installment': '₱2,500.00',
-                    'Term': '24 months',
-                    'Perpetual Care Fee': '₱5,000.00',
+                    'Total Contract Price': _formatCurrency(totalPrice),
+                    'Down Payment': _formatCurrency(downPayment),
+                    'Balance': _formatCurrency(remainingBalance),
+                    'Monthly Installment': _formatCurrency(monthlyPayment),
+                    'Term': paymentTerm,
                   }),
 
                   const SizedBox(height: 12),
@@ -127,21 +322,21 @@ class DeedOfSaleScreen extends StatelessWidget {
                   const Divider(thickness: 1, height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       _SignatureColumn(
                         title: 'PURCHASER SIGNATURE',
-                        name: 'Juan Carlos Dela Cruz',
+                        name: userName,
                       ),
-                      _SignatureColumn(
+                      const _SignatureColumn(
                         title: 'AUTHORIZED REPRESENTATIVE',
                         name: 'Dumaguete Memorial Park',
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Date: January 15, 2024',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  Text(
+                    'Date: $contractDate',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
@@ -152,105 +347,177 @@ class DeedOfSaleScreen extends StatelessWidget {
     );
   }
 
-  // 🔽 Function to actually create and save PDF
+  // ✅ WORKS ON BOTH WEB AND ANDROID
   Future<void> _generateAndSavePdf(BuildContext context) async {
-    final pdf = pw.Document();
-
-    pdf.addPage(
-      pw.MultiPage(
-        build: (context) => [
-          pw.Center(
-            child: pw.Column(
-              children: [
-                pw.Text('DUMAGUETE MEMORIAL PARK',
-                    style: pw.TextStyle(
-                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
-                pw.Text('San Jose Ext., Taclobo, Dumaguete City, Negros Oriental'),
-                pw.SizedBox(height: 10),
-                pw.Text('DEED OF SALE & PERPETUAL CARE',
-                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-                pw.Divider(),
-                pw.SizedBox(height: 10),
-
-                pw.Text('PURCHASER INFORMATION',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                _pdfInfoBlock({
-                  'Name': 'Juan Carlos Dela Cruz',
-                  'Address': '123 Rizal Boulevard, Dumaguete City',
-                  'Contact': '0965-743-2479',
-                  'Email': 'juan.delacruz@gmail.com',
-                }),
-                pw.SizedBox(height: 10),
-
-                pw.Text('LOT DETAILS',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                _pdfInfoBlock({
-                  'Section': 'Garden Family Estate',
-                  'Block': 'B',
-                  'Lot Number': '12',
-                  'Area': '6 square meters',
-                }),
-                pw.SizedBox(height: 10),
-
-                pw.Text('FINANCIAL DETAILS',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                _pdfInfoBlock({
-                  'Total Contract Price': '₱75,000.00',
-                  'Down Payment': '₱15,000.00',
-                  'Balance': '₱60,000.00',
-                  'Monthly Installment': '₱2,500.00',
-                  'Term': '24 months',
-                  'Perpetual Care Fee': '₱5,000.00',
-                }),
-                pw.SizedBox(height: 10),
-
-                pw.Text('TERMS AND CONDITIONS',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text(
-                  '1. This deed serves as proof of ownership of the memorial lot described above upon full payment.\n'
-                  '2. The purchaser agrees to pay the balance in monthly installments.\n'
-                  '3. Perpetual care includes maintenance and security of the grounds.\n'
-                  '4. Transfer of ownership requires approval and applicable fees.\n'
-                  '5. Governed by the laws of the Republic of the Philippines.',
-                  style: const pw.TextStyle(fontSize: 11),
-                ),
-                pw.SizedBox(height: 20),
-
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Column(children: [
-                      pw.Text('PURCHASER SIGNATURE',
-                          style: const pw.TextStyle(fontSize: 11)),
-                      pw.Text('Juan Carlos Dela Cruz',
-                          style: const pw.TextStyle(fontSize: 11)),
-                    ]),
-                    pw.Column(children: [
-                      pw.Text('AUTHORIZED REPRESENTATIVE',
-                          style: const pw.TextStyle(fontSize: 11)),
-                      pw.Text('Dumaguete Memorial Park',
-                          style: const pw.TextStyle(fontSize: 11)),
-                    ]),
-                  ],
-                ),
-                pw.SizedBox(height: 10),
-                pw.Text('Date: January 15, 2024',
-                    style: const pw.TextStyle(fontSize: 10)),
-              ],
-            ),
-          ),
-        ],
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: Colors.white),
       ),
     );
 
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/Deed_of_Sale.pdf');
-    await file.writeAsBytes(await pdf.save());
+    try {
+      // Extract data
+      final userName = _userData?['displayName'] ?? 
+                       _userData?['fullName'] ?? 
+                       _contractData?['client'] ?? 
+                       'N/A';
+      final userAddress = _userData?['address'] ?? _contractData?['address'] ?? 'N/A';
+      final userPhone = _userData?['phoneNumber'] ?? _contractData?['contact'] ?? 'N/A';
+      final userEmail = _userData?['email'] ?? _contractData?['email'] ?? 'N/A';
+      final lotCategory = _contractData?['lotCategory'] ?? _contractData?['location'] ?? 'Garden Family Estate';
+      final lotNumber = _contractData?['lotNumber'] ?? _contractData?['lot'] ?? 'N/A';
+      final lotSize = _contractData?['lotSize'] ?? '2m x 1m';
+      final totalPrice = _contractData?['totalCost'] ?? _contractData?['totalAmount'] ?? 0;
+      final downPayment = _contractData?['initialPayment'] ?? _contractData?['downPayment'] ?? 0;
+      final monthlyPayment = _contractData?['monthlyPayment'] ?? 0;
+      final paymentTerm = _contractData?['paymentTerm'] ?? '12 months';
+      final remainingBalance = _contractData?['remainingBalance'] ?? (totalPrice - downPayment);
+      final contractDate = _contractData?['startDate'] ?? _getCurrentDate();
+      final contractId = _contractData?['contractId'] ?? 'N/A';
 
-    // Confirm download
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PDF downloaded to: ${file.path}')),
-    );
+      // Create PDF
+      final pdf = pw.Document();
+      pdf.addPage(
+        pw.MultiPage(
+          build: (context) => [
+            pw.Center(
+              child: pw.Column(
+                children: [
+                  pw.Text('DUMAGUETE MEMORIAL PARK',
+                      style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                  pw.Text('San Jose Ext., Taclobo, Dumaguete City, Negros Oriental'),
+                  pw.SizedBox(height: 10),
+                  pw.Text('DEED OF SALE & PERPETUAL CARE',
+                      style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                  pw.Text('Contract ID: $contractId', style: const pw.TextStyle(fontSize: 10)),
+                  pw.Divider(),
+                  pw.SizedBox(height: 10),
+                  pw.Text('PURCHASER INFORMATION', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  _pdfInfoBlock({'Name': userName, 'Address': userAddress, 'Contact': userPhone, 'Email': userEmail}),
+                  pw.SizedBox(height: 10),
+                  pw.Text('LOT DETAILS', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  _pdfInfoBlock({'Section': lotCategory, 'Lot Number': lotNumber, 'Area': lotSize}),
+                  pw.SizedBox(height: 10),
+                  pw.Text('FINANCIAL DETAILS', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  _pdfInfoBlock({
+                    'Total Contract Price': _formatCurrency(totalPrice),
+                    'Down Payment': _formatCurrency(downPayment),
+                    'Balance': _formatCurrency(remainingBalance),
+                    'Monthly Installment': _formatCurrency(monthlyPayment),
+                    'Term': paymentTerm,
+                  }),
+                  pw.SizedBox(height: 10),
+                  pw.Text('TERMS AND CONDITIONS', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(
+                    '1. This deed serves as proof of ownership upon full payment.\n'
+                    '2. Purchaser agrees to pay balance in monthly installments.\n'
+                    '3. Perpetual care includes maintenance and security.\n'
+                    '4. Transfer requires approval and fees.\n'
+                    '5. Governed by Philippine laws.',
+                    style: const pw.TextStyle(fontSize: 11),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Column(children: [
+                        pw.Text('PURCHASER SIGNATURE', style: const pw.TextStyle(fontSize: 11)),
+                        pw.SizedBox(height: 5),
+                        pw.Text(userName, style: const pw.TextStyle(fontSize: 11)),
+                      ]),
+                      pw.Column(children: [
+                        pw.Text('AUTHORIZED REPRESENTATIVE', style: const pw.TextStyle(fontSize: 11)),
+                        pw.SizedBox(height: 5),
+                        pw.Text('Dumaguete Memorial Park', style: const pw.TextStyle(fontSize: 11)),
+                      ]),
+                    ],
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text('Date: $contractDate', style: const pw.TextStyle(fontSize: 10)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
+      final fileName = 'Deed_of_Sale_$contractId.pdf';
+      final bytes = await pdf.save();
+
+     if (kIsWeb) {
+  // WEB: Download via browser
+  // Create blob and download link
+  final blob = web_html.Blob([bytes], 'application/pdf');
+  final url = web_html.Url.createObjectUrlFromBlob(blob);
+  final anchor = web_html.document.createElement('a') as web_html.AnchorElement;
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  web_html.Url.revokeObjectUrl(url);
+
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('PDF downloaded: $fileName'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        // ANDROID: Save to Downloads folder
+        await Permission.storage.request();
+        
+        Directory? directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) {
+          directory = await getExternalStorageDirectory();
+        }
+
+        final file = File('${directory!.path}/$fileName');
+        await file.writeAsBytes(bytes);
+
+        if (mounted) {
+          Navigator.pop(context);
+          
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Success!'),
+              content: Text('PDF saved to:\n${directory!.path}/$fileName'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await OpenFile.open(file.path);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 10, 35, 172),
+                  ),
+                  child: const Text('Open PDF'),
+                ),
+              ],
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   static pw.Widget _pdfInfoBlock(Map<String, String> data) {

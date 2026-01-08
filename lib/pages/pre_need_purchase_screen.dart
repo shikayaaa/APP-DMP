@@ -3,15 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PreNeedPurchaseScreen extends StatefulWidget {
-  final String title;
-  final String totalPrice;
-  final String downPayment;
-
+  final String title;           // ✅ ADD THIS
+  final String totalPrice;      // ✅ ADD THIS
+  final String downPayment;     // ✅ ADD THIS
+  final String lotType;         // Already there
+  final String lotCategory;     // Already there
+  
   const PreNeedPurchaseScreen({
     super.key,
     required this.title,
     required this.totalPrice,
     required this.downPayment,
+    required this.lotType,
+    required this.lotCategory,
   });
 
   @override
@@ -192,32 +196,43 @@ class _PreNeedPurchaseScreenState extends State<PreNeedPurchaseScreen> {
           .get();
       final contractId = 'PN-${(existingPlans.size + 1).toString().padLeft(3, '0')}';
 
-      // Prepare complete form data - matching admin panel field names
-      final formData = {
-        // Contract ID
-        'contractId': contractId,
-        
-        // User Information
-        'userId': user.uid,
-        'userEmail': user.email,
-        
-        // Client Information (admin uses these field names)
-        'client': _fullNameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'contact': _phoneController.text.trim(),
-        
-        // Plan Details (matching admin field names)
-        'planType': widget.title,
-        'planTitle': widget.title,
-        'packageName': widget.title,
-        'lotSize': _getLotSize(widget.title),
-        
-        // Amounts as NUMBERS (not strings)
-        'totalAmount': totalPrice,
-        'totalPrice': widget.totalPrice, // Keep string version for display
-        'downPayment': downPaymentAmount,
-        'downPaymentString': widget.downPayment, // String version
-        
+    // Prepare complete form data - matching admin panel field names
+final formData = {
+  // Contract ID
+  'contractId': contractId,
+  
+  // User Information
+  'userId': user.uid,
+  'userEmail': user.email,
+  
+  // Client Information (admin uses these field names)
+  'client': _fullNameController.text.trim(),
+  'email': _emailController.text.trim(),
+  'contact': _phoneController.text.trim(),
+  
+  // Plan Details (matching admin field names)
+  'planType': widget.title,
+  'planTitle': widget.title,
+  'packageName': widget.title,
+  'lotSize': _getLotSize(widget.title),
+  'lotCategory': widget.lotCategory,
+  'lotType': widget.lotType,
+  
+  // ✅ CRITICAL: Add these fields for admin panel
+  'totalCost': totalPrice,           // Admin looks for totalCost
+  'initialPayment': downPaymentAmount, // Admin looks for initialPayment
+  'lot': widget.lotType,              // Lot description
+  'lotNumber': widget.lotCategory,    // Lot number/category
+  'lotLocation': widget.lotCategory,  // Location
+  
+  // Amounts as NUMBERS (not strings)
+'totalCost': totalPrice,           // ✅ THIS IS CRITICAL
+'totalAmount': totalPrice,         // ✅ Backup field name
+'totalPrice': widget.totalPrice,   // String version for display
+'initialPayment': downPaymentAmount, // ✅ THIS IS CRITICAL
+'downPayment': downPaymentAmount,   // ✅ Backup field name
+'downPaymentString': widget.downPayment,
+
         // Payment Information
         'monthlyPayment': _parseMonthlyPayment(_calculateMonthlyPayment()),
         'termMonths': _getPaymentTermMonths(),
@@ -269,8 +284,9 @@ class _PreNeedPurchaseScreenState extends State<PreNeedPurchaseScreen> {
         'confirmedInformation': _confirmedInformation,
         'status': 'active',
         
-        // Legacy fields for compatibility
-        'location': 'Garden Family Estate',
+      // Legacy fields for compatibility
+'location': widget.lotCategory,
+'section': 'A', // Default section
         'totalPayments': 1,
         'paymentsRemaining': _getPaymentTermMonths() - 1,
         

@@ -17,7 +17,6 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _blockController = TextEditingController();
   final TextEditingController _lotController = TextEditingController();
-  final TextEditingController _nicheController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _contactNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -145,7 +144,6 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
         'section': _selectedSection,
         'block': _blockController.text.trim(),
         'lotNumber': _lotController.text.trim(),
-        'niche': _nicheController.text.trim(),
         'preferredDate': _dateController.text,
         'preferredTime': _selectedTime ?? '',
         'contactPersonName': _contactNameController.text.trim(),
@@ -169,7 +167,6 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
         _nameController.clear();
         _blockController.clear();
         _lotController.clear();
-        _nicheController.clear();
         _dateController.clear();
         _contactNameController.clear();
         _phoneController.clear();
@@ -206,7 +203,6 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
     _nameController.dispose();
     _blockController.dispose();
     _lotController.dispose();
-    _nicheController.dispose();
     _dateController.dispose();
     _contactNameController.dispose();
     _phoneController.dispose();
@@ -274,11 +270,7 @@ class _IntermentRequestScreenState extends State<IntermentRequestScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        _whiteTextField(
-                          controller: _nicheController,
-                          label: "Niche (if applicable)",
-                        ),
+                      
                       ],
                     ),
                   ),

@@ -84,8 +84,26 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         _remainingBalance = remaining > 0 ? remaining : 0.0;
         _totalPaid = totalPaid;
         _paymentCount = paymentsSnapshot.docs.length;
-        _nextDueAmount = _parseCurrency(agreementData['nextPaymentAmount'] ?? '₱0');
-        _nextDueDate = agreementData['nextPaymentDate'] ?? 'TBD';
+       // Handle nextPaymentAmount - it's stored as a number in Firestore
+final nextPaymentAmountData = agreementData['nextPaymentAmount'];
+if (nextPaymentAmountData is num) {
+  _nextDueAmount = nextPaymentAmountData.toDouble();
+} else if (nextPaymentAmountData is String) {
+  _nextDueAmount = _parseCurrency(nextPaymentAmountData);
+} else {
+  _nextDueAmount = 0.0;
+}
+
+// Handle nextPaymentDate
+final nextPaymentDateData = agreementData['nextPaymentDate'];
+if (nextPaymentDateData is String) {
+  _nextDueDate = nextPaymentDateData;
+} else if (nextPaymentDateData is Timestamp) {
+  final date = nextPaymentDateData.toDate();
+  _nextDueDate = '${date.month}/${date.day}/${date.year}';
+} else {
+  _nextDueDate = 'TBD';
+}
        
         _isLoading = false;
       });

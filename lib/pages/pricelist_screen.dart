@@ -17,110 +17,132 @@ class _PriceListScreenState extends State<PriceListScreen> {
     "Garden Family",
     "Family Estate"
   ];
+Widget _buildLotCard({
+  required String title,
+  required String lotPrice,
+  required String care,
+  required String total,
+  required String downPayment,
+  required List<Map<String, String>> installments,
+  required int categoryIndex, // ✅ ADD THIS - to know which category is selected
+}) {
+  return Container(
+    margin: const EdgeInsets.only(bottom: 16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+            color: const Color.fromARGB(255, 231, 217, 217).withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4))
+      ],
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(title,
+            style:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+        const SizedBox(height: 12),
 
-  // Reusable Lot Card
-  Widget _buildLotCard({
-    required String title,
-    required String lotPrice,
-    required String care,
-    required String total,
-    required String downPayment,
-    required List<Map<String, String>> installments,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: const Color.fromARGB(255, 231, 217, 217).withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 4))
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
-          const SizedBox(height: 12),
+        // Price rows
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text("Lot Price", style: TextStyle(color: Colors.black)),
+          Text(lotPrice, style: const TextStyle(color: Colors.black)),
+        ]),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text("Perpetual Care", style: TextStyle(color: Colors.black)),
+          Text(care, style: const TextStyle(color: Colors.black)),
+        ]),
+        const SizedBox(height: 6),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text("Total Price", style: TextStyle(color: Colors.black)),
+          Text(total,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.teal)),
+        ]),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text("Down Payment", style: TextStyle(color: Colors.black)),
+          Text(downPayment, style: const TextStyle(color: Colors.black)),
+        ]),
+        const SizedBox(height: 16),
 
-          // Price rows
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Lot Price", style: TextStyle(color: Colors.black)),
-            Text(lotPrice, style: const TextStyle(color: Colors.black)),
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Perpetual Care", style: TextStyle(color: Colors.black)),
-            Text(care, style: const TextStyle(color: Colors.black)),
-          ]),
-          const SizedBox(height: 6),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Total Price", style: TextStyle(color: Colors.black)),
-            Text(total,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.teal)),
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("Down Payment", style: TextStyle(color: Colors.black)),
-            Text(downPayment, style: const TextStyle(color: Colors.black)),
-          ]),
-          const SizedBox(height: 16),
+        // Installments
+        const Text("Monthly Installment Options",
+            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
+        const SizedBox(height: 8),
 
-          // Installments
-          const Text("Monthly Installment Options",
-              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
-          const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: installments
+              .map((opt) => _InstallmentBox(
+                    term: opt["term"]!,
+                    price: opt["price"]!,
+                    total: opt["total"]!,
+                  ))
+              .toList(),
+        ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: installments
-                .map((opt) => _InstallmentBox(
-                      term: opt["term"]!,
-                      price: opt["price"]!,
-                      total: opt["total"]!,
-                    ))
-                .toList(),
-          ),
+        const SizedBox(height: 16),
 
-          const SizedBox(height: 16),
-
-          // ✅ "Avail Plan" button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 77, 90, 124),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PreNeedPurchaseScreen(
-                      title: title,
-                      totalPrice: total,
-                      downPayment: downPayment,
-                    ),
-                  ),
-                );
-              },
-              child: const Text(
-                "Avail Plan",
-                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // changed from white → black
+        // ✅ "Avail Plan" button with lot type and category
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 77, 90, 124),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-          )
-        ]),
-      ),
-    );
+      onPressed: () {
+  // ✅ Use categoryIndex parameter instead of _selectedCategory
+  String lotType = '';
+  String lotCategory = '';
+  
+  if (categoryIndex == 0) {
+    // Lawn Area
+    lotCategory = 'LAWN AREA (1)';
+    lotType = 'Lawn Area (1) - $title';
+  } else if (categoryIndex == 1) {
+    // Memorial Garden
+    lotCategory = 'MEMORIAL GARDEN';
+    lotType = 'Memorial Garden - $title';
+  } else if (categoryIndex == 2) {
+    // Garden Family Estate
+    lotCategory = 'GARDEN FAMILY ESTATE';
+    lotType = 'Garden Family Estate - $title';
+  } else if (categoryIndex == 3) {
+    // Family Estate (Mausoleum)
+    lotCategory = 'FAMILY ESTATE (Mausoleum)';
+    lotType = 'Family Estate - $title';
   }
-
+  
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PreNeedPurchaseScreen(
+        title: title,
+        totalPrice: total,
+        downPayment: downPayment,
+        lotType: lotType,
+        lotCategory: lotCategory,
+      ),
+    ),
+  );
+},
+            child: const Text(
+              "Avail Plan",
+              style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+            ),
+          ),
+        )
+      ]),
+    ),
+  );
+}
   // Category-specific content
   Widget _buildCategoryContent() {
     switch (_selectedCategory) {
@@ -132,6 +154,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱5,590",
             total: "₱79,461",
             downPayment: "₱15,892",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "12 mos", "price": "₱6,011", "total": "₱88,024"},
               {"term": "36 mos", "price": "₱2,483", "total": "₱105,280"},
@@ -144,6 +167,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱5,590",
             total: "₱76,133",
             downPayment: "₱15,227",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "12 mos", "price": "₱5,759", "total": "₱84,335"},
               {"term": "36 mos", "price": "₱2,379", "total": "₱100,871"},
@@ -156,6 +180,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱5,590",
             total: "₱72,406",
             downPayment: "₱14,482",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "12 mos", "price": "₱5,477", "total": "₱80,266"},
               {"term": "36 mos", "price": "₱2,262", "total": "₱95,914"},
@@ -168,6 +193,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱5,590",
             total: "₱69,478",
             downPayment: "₱13,896",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "12 mos", "price": "₱5,256", "total": "₱76,968"},
               {"term": "36 mos", "price": "₱2,171", "total": "₱92,052"},
@@ -184,6 +210,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱13,076",
             total: "₱391,315",
             downPayment: "₱78,262",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "36 mos", "price": "₱9,201", "total": ""},
               {"term": "48 mos", "price": "₱7,364", "total": ""},
@@ -196,6 +223,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱13,976",
             total: "₱346,726",
             downPayment: "₱69,345",
+              categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
             installments: [
               {"term": "36 mos", "price": "₱8,136", "total": ""},
               {"term": "48 mos", "price": "₱6,518", "total": ""},
@@ -208,6 +236,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
             care: "₱13,976",
             total: "₱306,796",
             downPayment: "₱61,359",
+              categoryIndex: _selectedCategory, 
             installments: [
               {"term": "12 mos", "price": "₱23,208", "total": "₱339,855"},
               {"term": "36 mos", "price": "₱9,585", "total": "₱406,419"},
@@ -238,6 +267,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
               care: "₱44,722",
               total: "₱851,308",
               downPayment: "₱170,262",
+ categoryIndex: _selectedCategory, 
               installments: [
                 {"term": "12 mos", "price": "₱64,397", "total": "₱943,026"},
                 {"term": "36 mos", "price": "₱26,957", "total": "₱1,127,574"},
@@ -250,6 +280,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
               care: "₱44,722",
               total: "₱784,093",
               downPayment: "₱156,819",
+               categoryIndex: _selectedCategory, 
               installments: [
                 {"term": "12 mos", "price": "₱59,312", "total": "₱868,563"},
                 {"term": "36 mos", "price": "₱24,487", "total": "₱1,038,711"},
@@ -281,6 +312,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
               care: "₱39,443",
               total: "₱1,927,501",
               downPayment: "₱385,500",
+               categoryIndex: _selectedCategory, 
               installments: [
                 {"term": "12 mos", "price": "₱145,758", "total": "₱2,169,096"},
                 {"term": "36 mos", "price": "₱61,017", "total": "₱2,586,612"},
@@ -293,6 +325,7 @@ class _PriceListScreenState extends State<PriceListScreen> {
               care: "₱89,443",
               total: "₱1,053,473",
               downPayment: "₱210,695",
+               categoryIndex: _selectedCategory, 
               installments: [
                 {"term": "12 mos", "price": "₱79,106", "total": "₱1,233,270"},
                 {"term": "36 mos", "price": "₱33,111", "total": "₱1,392,996"},

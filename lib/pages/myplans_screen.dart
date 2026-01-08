@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'payments_screen.dart'; // ✅ CHANGED: Import PaymentsScreen instead of payment_screen
 import 'paymenthistory_screen.dart';
+import 'deed_of_sale_screen.dart';
 
 class MyPlansScreen extends StatefulWidget {
   const MyPlansScreen({super.key});
@@ -195,10 +196,10 @@ double _parseCurrency(dynamic value) {
                                   const Icon(Icons.location_on,
                                       size: 16, color: Colors.blue),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    _planData?['location'] ?? 'Garden Family Estate',
-                                    style: const TextStyle(color: Colors.black87),
-                                  ),
+                          Text(
+  _planData?['lotCategory'] ?? _planData?['location'] ?? 'N/A',
+  style: const TextStyle(color: Colors.black87),
+),
                                 ],
                               ),
                               const SizedBox(height: 16),
@@ -309,67 +310,87 @@ double _parseCurrency(dynamic value) {
                                   ],
                                 ),
                               ),
+const SizedBox(height: 16),
 
-                              const SizedBox(height: 16),
+Row(
+  children: [
+    Expanded(
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        icon: const Icon(Icons.payment),
+        label: const Text("Pay Now"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PaymentsScreen(),
+            ),
+          );
+        },
+      ),
+    ),
+    const SizedBox(width: 12),
+    Expanded(
+      child: OutlinedButton.icon(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.blue,
+          side: const BorderSide(color: Colors.blue),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        icon: const Icon(Icons.history),
+        label: const Text("History"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PaymentHistoryScreen(),
+            ),
+          );
+        },
+      ),
+    ),
+  ],
+),
 
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      icon: const Icon(Icons.payment),
-                                      label: const Text("Pay Now"),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PaymentsScreen(), // ✅ FIXED: Changed to PaymentsScreen
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: OutlinedButton.icon(
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.blue,
-                                        side: const BorderSide(color: Colors.blue),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      icon: const Icon(Icons.history),
-                                      label: const Text("History"),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PaymentHistoryScreen(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
+// ✅ NEW "View Deed of Sale" button
+const SizedBox(height: 12),
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromARGB(255, 0, 47, 150),
+      foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    icon: const Icon(Icons.description),
+    label: const Text("View Deed of Sale"),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DeedOfSaleScreen(),
+        ),
+      );
+    },
+  ),
+),
+                            ],  // ✅ ADD THIS - closes the Column children
+                          ),    // ✅ ADD THIS - closes the Column
+                        ),      // ✅ ADD THIS - closes the Padding
+                      ),        // ✅ ADD THIS - closes the Card
                       const SizedBox(height: 20),
 
                       Card(

@@ -104,7 +104,7 @@ class PriceListModal extends StatelessWidget {
                     if (serviceTitle == "Memorial Garden")
                       _buildImage(context, "assets/images/memorialg.jpg"),
                     if (serviceTitle == "Garden Family Estate")
-                      _buildImage(context, "assets/images/gardenfam.jpg"),
+                      _buildImage(context, "assets/images/gfsp.jpg"),
                     if (serviceTitle == "Family Estate (Mausoleum)")
                       _buildImage(context, "assets/images/mausoleum.jpg"),
 

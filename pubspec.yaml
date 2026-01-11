@@ -35,7 +35,7 @@ dependencies:
   flutter_animate: ^4.5.0
   intl: ^0.19.0
   permission_handler: ^11.3.1
-  open_file_plus: ^3.4.1
+
 
 dev_dependencies:
   flutter_test:
@@ -56,3 +56,11 @@ flutter:
     - assets/images/gardenfam.jpg
     - assets/images/mausoleum.jpg
     - assets/images/dmp.png
+    - assets/images/lasp.jpg
+    - assets/images/lap.jpg
+    - assets/images/laprime.jpg
+    - assets/images/lar.jpg
+    - assets/images/mgsp.jpg
+    - assets/images/mgr.jpg
+    - assets/images/gfp.jpg
+    - assets/images/gfsp.jpg

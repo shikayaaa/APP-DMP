@@ -24,7 +24,8 @@ Widget _buildLotCard({
   required String total,
   required String downPayment,
   required List<Map<String, String>> installments,
-  required int categoryIndex, // ✅ ADD THIS - to know which category is selected
+  required int categoryIndex, 
+   String? imagePath,
 }) {
   return Container(
     margin: const EdgeInsets.only(bottom: 16),
@@ -41,10 +42,33 @@ Widget _buildLotCard({
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title,
+   Text(title,
             style:
                 const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 18),
+        
+        // ✅ ADD IMAGE if provided
+        if (imagePath != null) ...[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              imagePath,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 200,
+                  color: Colors.grey.shade200,
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
 
         // Price rows
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -155,6 +179,7 @@ Widget _buildLotCard({
             total: "₱79,461",
             downPayment: "₱15,892",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+            imagePath: 'assets/images/laprime.jpg',
             installments: [
               {"term": "12 mos", "price": "₱6,011", "total": "₱88,024"},
               {"term": "36 mos", "price": "₱2,483", "total": "₱105,280"},
@@ -168,6 +193,7 @@ Widget _buildLotCard({
             total: "₱76,133",
             downPayment: "₱15,227",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+               imagePath: 'assets/images/lasp.jpg',
             installments: [
               {"term": "12 mos", "price": "₱5,759", "total": "₱84,335"},
               {"term": "36 mos", "price": "₱2,379", "total": "₱100,871"},
@@ -181,6 +207,7 @@ Widget _buildLotCard({
             total: "₱72,406",
             downPayment: "₱14,482",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+               imagePath: 'assets/images/lap.jpg',
             installments: [
               {"term": "12 mos", "price": "₱5,477", "total": "₱80,266"},
               {"term": "36 mos", "price": "₱2,262", "total": "₱95,914"},
@@ -194,6 +221,7 @@ Widget _buildLotCard({
             total: "₱69,478",
             downPayment: "₱13,896",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+                 imagePath: 'assets/images/lar.jpg',
             installments: [
               {"term": "12 mos", "price": "₱5,256", "total": "₱76,968"},
               {"term": "36 mos", "price": "₱2,171", "total": "₱92,052"},
@@ -211,6 +239,7 @@ Widget _buildLotCard({
             total: "₱391,315",
             downPayment: "₱78,262",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+              imagePath: 'assets/images/memorialg.jpg',
             installments: [
               {"term": "36 mos", "price": "₱9,201", "total": ""},
               {"term": "48 mos", "price": "₱7,364", "total": ""},
@@ -224,6 +253,7 @@ Widget _buildLotCard({
             total: "₱346,726",
             downPayment: "₱69,345",
               categoryIndex: _selectedCategory, // ✅ ADD THIS LINE
+                imagePath: 'assets/images/mgsp.jpg',
             installments: [
               {"term": "36 mos", "price": "₱8,136", "total": ""},
               {"term": "48 mos", "price": "₱6,518", "total": ""},
@@ -237,6 +267,7 @@ Widget _buildLotCard({
             total: "₱306,796",
             downPayment: "₱61,359",
               categoryIndex: _selectedCategory, 
+               imagePath: 'assets/images/mgr.jpg',
             installments: [
               {"term": "12 mos", "price": "₱23,208", "total": "₱339,855"},
               {"term": "36 mos", "price": "₱9,585", "total": "₱406,419"},
@@ -268,6 +299,7 @@ Widget _buildLotCard({
               total: "₱851,308",
               downPayment: "₱170,262",
  categoryIndex: _selectedCategory, 
+  imagePath: 'assets/images/gfsp.jpg',
               installments: [
                 {"term": "12 mos", "price": "₱64,397", "total": "₱943,026"},
                 {"term": "36 mos", "price": "₱26,957", "total": "₱1,127,574"},
@@ -281,6 +313,7 @@ Widget _buildLotCard({
               total: "₱784,093",
               downPayment: "₱156,819",
                categoryIndex: _selectedCategory, 
+                    imagePath: 'assets/images/gfp.jpg',
               installments: [
                 {"term": "12 mos", "price": "₱59,312", "total": "₱868,563"},
                 {"term": "36 mos", "price": "₱24,487", "total": "₱1,038,711"},
@@ -313,6 +346,7 @@ Widget _buildLotCard({
               total: "₱1,927,501",
               downPayment: "₱385,500",
                categoryIndex: _selectedCategory, 
+               imagePath: 'assets/images/gardenfam.jpg',
               installments: [
                 {"term": "12 mos", "price": "₱145,758", "total": "₱2,169,096"},
                 {"term": "36 mos", "price": "₱61,017", "total": "₱2,586,612"},
@@ -326,6 +360,7 @@ Widget _buildLotCard({
               total: "₱1,053,473",
               downPayment: "₱210,695",
                categoryIndex: _selectedCategory, 
+                 imagePath: 'assets/images/mausoleum.jpg',
               installments: [
                 {"term": "12 mos", "price": "₱79,106", "total": "₱1,233,270"},
                 {"term": "36 mos", "price": "₱33,111", "total": "₱1,392,996"},

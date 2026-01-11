@@ -40,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final dbService = DatabaseService();
         final userProfile = await dbService.getUserProfile(currentUser.uid);
 
+        
         // Load active plans count
         final plansSnapshot = await FirebaseFirestore.instance
             .collection('preNeedAgreements')
@@ -197,7 +198,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final email = _userProfile?.email ?? 
                   FirebaseAuth.instance.currentUser?.email ?? 
                   "user@example.com";
-    final initials = _getInitials(displayName);
+              
+
+final initials = _getInitials(displayName);
+  
 
     return Scaffold(
       backgroundColor: Colors.blue.shade50,
@@ -260,28 +264,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        displayName,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        email,
-                        style: const TextStyle(color: Colors.black54),
-                      ),
-                      Text(
-                        _phoneNumber,
-                        style: const TextStyle(color: Colors.black54),
-                      ),
-                    ],
-                  ),
+              child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text(
+      displayName,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
+    ),
+    const SizedBox(height: 4),
+    Text(
+      FirebaseAuth.instance.currentUser?.email ?? "No email",
+      style: const TextStyle(
+        color: Colors.black87,
+        fontSize: 14,
+      ),
+    ),
+    const SizedBox(height: 2),
+    Text(
+      _phoneNumber,
+      style: const TextStyle(color: Colors.black54),
+    ),
+  ],
+),
                 ),
               ],
             ),
@@ -310,10 +318,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 16),
 
-          // Contact Info
-          _sectionTitle("Contact Information"),
-          _contactTile(Icons.email, email, "Email Address"),
-          _contactTile(Icons.phone, _phoneNumber, "Phone Number"),
+  // Contact Info
+_sectionTitle("Contact Information"),
+_contactTile(Icons.email, FirebaseAuth.instance.currentUser?.email ?? "No email", "Email Address"),
           _contactTile(Icons.location_on, _address, "Address"),
           _contactTile(
             Icons.calendar_today,
@@ -323,20 +330,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 16),
 
-          // Action Tiles
-          _actionTile(
-            context,
-            Icons.edit,
-            "Edit Profile",
-            "Update your personal information",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const EditProfileScreen()),
-              );
-            },
-          ),
+         _actionTile(
+  context,
+  Icons.edit,
+  "Edit Profile",
+  "Update your personal information",
+  onTap: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const EditProfileScreen()),
+    );
+    
+    // Reload data when returning from edit screen
+    if (result != null) {
+      _loadAllUserData();
+    }
+  },
+),
 
           _actionTile(
             context,
@@ -446,7 +457,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _contactTile(IconData icon, String value, String label) {
+Widget _contactTile(IconData icon, String value, String label) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
@@ -457,16 +468,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Icon(icon, color: Colors.blue),
         title: Text(
           value,
-          style: const TextStyle(color: Colors.black),
+          style: const TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+            fontSize: 15,
+          ),
         ),
         subtitle: Text(
           label,
-          style: const TextStyle(color: Colors.black54),
+          style: const TextStyle(
+            color: Colors.black54,
+            fontSize: 13,
+          ),
         ),
       ),
     );
   }
-
   Widget _actionTile(
     BuildContext context,
     IconData icon,

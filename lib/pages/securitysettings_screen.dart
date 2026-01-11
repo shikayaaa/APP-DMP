@@ -70,6 +70,8 @@ class _SecuritysettingsScreenState extends State<SecuritysettingsScreen> {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
 
+       await _recordCurrentLogin();
+
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -89,6 +91,48 @@ class _SecuritysettingsScreenState extends State<SecuritysettingsScreen> {
       print('Error loading login activities: $e');
     }
   }
+  Future<void> _recordCurrentLogin() async {
+  try {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    // Get device info
+    String deviceType = 'Unknown Device';
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      deviceType = 'Android Device';
+    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+      deviceType = 'iPhone';
+    } else {
+      deviceType = 'Web Browser';
+    }
+
+    // Check if current session is already logged
+    final recentLogins = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('login_activities')
+        .where('isCurrent', isEqualTo: true)
+        .get();
+
+    // If no current session exists, create one
+    if (recentLogins.docs.isEmpty) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('login_activities')
+          .add({
+        'device': deviceType,
+        'location': 'Quezon City, PH',
+        'timestamp': FieldValue.serverTimestamp(),
+        'isCurrent': true,
+        'userId': user.uid,
+        'email': user.email,
+      });
+    }
+  } catch (e) {
+    print('Error recording login: $e');
+  }
+}
 
   Future<void> _updatePassword() async {
     if (_currentPasswordController.text.isEmpty ||
@@ -149,26 +193,257 @@ class _SecuritysettingsScreenState extends State<SecuritysettingsScreen> {
     }
   }
 
-  Future<void> _updateSecurityPreference(String key, bool value) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
+Future<void> _updateSecurityPreference(String key, bool value) async {
+  try {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('security_settings')
-          .doc('preferences')
-          .set({
-        key: value,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      await _logSecurityEvent('${key}_${value ? "enabled" : "disabled"}');
-    } catch (e) {
-      _showErrorSnackbar('Error updating preference: ${e.toString()}');
+    // If enabling 2FA, verify user first
+    if (key == 'twoFactorEnabled' && value) {
+      await _setupTwoFactorAuth();
+      return;
     }
+
+    // If disabling 2FA, confirm with user
+    if (key == 'twoFactorEnabled' && !value) {
+      final confirm = await _showConfirmDialog(
+        'Disable Two-Factor Authentication',
+        'Are you sure you want to disable 2FA? This will make your account less secure.',
+      );
+      
+      if (!confirm) {
+        setState(() => _twoFactorEnabled = true);
+        return;
+      }
+    }
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('security_settings')
+        .doc('preferences')
+        .set({
+      key: value,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    await _logSecurityEvent('${key}_${value ? "enabled" : "disabled"}');
+    
+    if (key == 'twoFactorEnabled' && !value) {
+      _showSuccessSnackbar('Two-Factor Authentication disabled');
+    }
+  } catch (e) {
+    _showErrorSnackbar('Error updating preference: ${e.toString()}');
+    // Revert the switch if it failed
+    setState(() {
+      if (key == 'twoFactorEnabled') _twoFactorEnabled = !value;
+      if (key == 'loginAlertsEnabled') _loginAlertsEnabled = !value;
+    });
   }
+}
+
+Future<void> _setupTwoFactorAuth() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  // Show verification dialog
+  final phoneController = TextEditingController();
+  final codeController = TextEditingController();
+  String? verificationId;
+  bool codeSent = false;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setDialogState) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Enable Two-Factor Authentication',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!codeSent) ...[
+              const Text(
+                'Enter your phone number to receive a verification code',
+                style: TextStyle(color: Colors.black87),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: phoneController,
+                style: const TextStyle(color: Colors.black),
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  hintText: '+63 912 345 6789',
+                  hintStyle: const TextStyle(color: Colors.black54),
+                  prefixIcon: const Icon(Icons.phone, color: Colors.blue),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                ),
+              ),
+            ] else ...[
+              const Text(
+                'Enter the verification code sent to your phone',
+                style: TextStyle(color: Colors.black87),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: codeController,
+                style: const TextStyle(color: Colors.black),
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                decoration: InputDecoration(
+                  labelText: 'Verification Code',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  hintText: '123456',
+                  hintStyle: const TextStyle(color: Colors.black54),
+                  prefixIcon: const Icon(Icons.security, color: Colors.blue),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                ),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() => _twoFactorEnabled = false);
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel', style: TextStyle(color: Colors.black87)),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (!codeSent) {
+                // Send verification code
+                if (phoneController.text.isEmpty) {
+                  _showErrorSnackbar('Please enter your phone number');
+                  return;
+                }
+
+                try {
+                  await FirebaseAuth.instance.verifyPhoneNumber(
+                    phoneNumber: phoneController.text.trim(),
+                    verificationCompleted: (PhoneAuthCredential credential) async {
+                      // Auto-verification (Android only)
+                      await _completeTwoFactorSetup(credential);
+                      Navigator.pop(context);
+                    },
+                    verificationFailed: (FirebaseAuthException e) {
+                      _showErrorSnackbar('Verification failed: ${e.message}');
+                      setState(() => _twoFactorEnabled = false);
+                      Navigator.pop(context);
+                    },
+                    codeSent: (String verId, int? resendToken) {
+                      verificationId = verId;
+                      setDialogState(() => codeSent = true);
+                      _showSuccessSnackbar('Verification code sent!');
+                    },
+                    codeAutoRetrievalTimeout: (String verId) {
+                      verificationId = verId;
+                    },
+                    timeout: const Duration(seconds: 60),
+                  );
+                } catch (e) {
+                  _showErrorSnackbar('Error sending code: ${e.toString()}');
+                  setState(() => _twoFactorEnabled = false);
+                  Navigator.pop(context);
+                }
+              } else {
+                // Verify code
+                if (codeController.text.isEmpty) {
+                  _showErrorSnackbar('Please enter the verification code');
+                  return;
+                }
+
+                try {
+                  final credential = PhoneAuthProvider.credential(
+                    verificationId: verificationId!,
+                    smsCode: codeController.text.trim(),
+                  );
+                  await _completeTwoFactorSetup(credential);
+                  Navigator.pop(context);
+                } catch (e) {
+                  _showErrorSnackbar('Invalid code: ${e.toString()}');
+                }
+              }
+            },
+            child: Text(
+              codeSent ? 'Verify' : 'Send Code',
+              style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Future<void> _completeTwoFactorSetup(PhoneAuthCredential credential) async {
+  try {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    // Link phone credential to account
+    await user.linkWithCredential(credential);
+
+    // Save 2FA status to Firestore
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('security_settings')
+        .doc('preferences')
+        .set({
+      'twoFactorEnabled': true,
+      'twoFactorPhone': user.phoneNumber,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    await _logSecurityEvent('twoFactorEnabled_enabled');
+    _showSuccessSnackbar('Two-Factor Authentication enabled successfully!');
+    setState(() => _twoFactorEnabled = true);
+  } catch (e) {
+    _showErrorSnackbar('Error enabling 2FA: ${e.toString()}');
+    setState(() => _twoFactorEnabled = false);
+  }
+}
+
+Future<bool> _showConfirmDialog(String title, String message) async {
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.black87),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel', style: TextStyle(color: Colors.black87)),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Confirm', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+        ),
+      ],
+    ),
+  );
+  return result ?? false;
+}
 
   Future<void> _updateRecoveryOptions() async {
     if (_recoveryEmailController.text.isEmpty && _recoveryPhoneController.text.isEmpty) {

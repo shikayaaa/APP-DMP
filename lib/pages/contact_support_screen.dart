@@ -59,23 +59,7 @@ class ContactSupportScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Call Office Card
-            _buildContactCard(
-              context: context,
-              icon: Icons.phone,
-              iconColor: const Color.fromARGB(255, 76, 162, 175),
-              iconBgColor: const Color(0xFFE8F5E9),
-              title: "Call Office",
-              subtitle: "Speak with our customer service team",
-              contact: "0965-143-2479 / 0956-496-9637",
-              buttonText: "Call Now",
-              buttonColor: const Color.fromARGB(255, 0, 53, 105),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Opening phone dialer...")),
-                );
-              },
-            ),
+       
 
             const SizedBox(height: 12),
 

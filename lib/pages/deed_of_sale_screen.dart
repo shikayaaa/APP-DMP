@@ -6,10 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:open_file_plus/open_file_plus.dart';
 
-// ✅ CONDITIONAL IMPORT - Only imports on web
-import 'dart:html' if (dart.library.io) 'dart:io' as web_html;
+
 
 class DeedOfSaleScreen extends StatefulWidget {
   const DeedOfSaleScreen({super.key});
@@ -214,12 +212,7 @@ String _formatCurrency(dynamic value) {
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.download_rounded),
-            onPressed: () => _generateAndSavePdf(context),
-          ),
-        ],
+      
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -446,28 +439,7 @@ String _formatCurrency(dynamic value) {
       final fileName = 'Deed_of_Sale_$contractId.pdf';
       final bytes = await pdf.save();
 
-     if (kIsWeb) {
-  // WEB: Download via browser
-  // Create blob and download link
-  final blob = web_html.Blob([bytes], 'application/pdf');
-  final url = web_html.Url.createObjectUrlFromBlob(blob);
-  final anchor = web_html.document.createElement('a') as web_html.AnchorElement;
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  web_html.Url.revokeObjectUrl(url);
-
-        if (mounted) {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('PDF downloaded: $fileName'),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
-      } else {
+ {
         // ANDROID: Save to Downloads folder
         await Permission.storage.request();
         
@@ -492,16 +464,7 @@ String _formatCurrency(dynamic value) {
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Close'),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await OpenFile.open(file.path);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 10, 35, 172),
-                  ),
-                  child: const Text('Open PDF'),
-                ),
+              
               ],
             ),
           );
@@ -520,7 +483,7 @@ String _formatCurrency(dynamic value) {
     }
   }
 
-  static pw.Widget _pdfInfoBlock(Map<String, String> data) {
+ pw.Widget _pdfInfoBlock(Map<String, String> data) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: data.entries
@@ -530,7 +493,7 @@ String _formatCurrency(dynamic value) {
     );
   }
 
-  static Widget _sectionTitle(String title) {
+ Widget _sectionTitle(String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -544,7 +507,7 @@ String _formatCurrency(dynamic value) {
     );
   }
 
-  static Widget _infoBlock(Map<String, String> data) {
+Widget _infoBlock(Map<String, String> data) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(top: 6),

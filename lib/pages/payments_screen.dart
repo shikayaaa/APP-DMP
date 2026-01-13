@@ -15,6 +15,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   
+  // ADD: TextEditingController for custom amount input
+  final TextEditingController _customAmountController = TextEditingController();
+  
   bool _isLoading = true;
   double _remainingBalance = 0.0;
   double _totalPaid = 0.0;
@@ -29,6 +32,13 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   void initState() {
     super.initState();
     _loadPaymentData();
+  }
+
+  // ADD: Dispose controller to prevent memory leaks
+  @override
+  void dispose() {
+    _customAmountController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadPaymentData() async {
@@ -84,26 +94,27 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         _remainingBalance = remaining > 0 ? remaining : 0.0;
         _totalPaid = totalPaid;
         _paymentCount = paymentsSnapshot.docs.length;
-       // Handle nextPaymentAmount - it's stored as a number in Firestore
-final nextPaymentAmountData = agreementData['nextPaymentAmount'];
-if (nextPaymentAmountData is num) {
-  _nextDueAmount = nextPaymentAmountData.toDouble();
-} else if (nextPaymentAmountData is String) {
-  _nextDueAmount = _parseCurrency(nextPaymentAmountData);
-} else {
-  _nextDueAmount = 0.0;
-}
+        
+        // Handle nextPaymentAmount - it's stored as a number in Firestore
+        final nextPaymentAmountData = agreementData['nextPaymentAmount'];
+        if (nextPaymentAmountData is num) {
+          _nextDueAmount = nextPaymentAmountData.toDouble();
+        } else if (nextPaymentAmountData is String) {
+          _nextDueAmount = _parseCurrency(nextPaymentAmountData);
+        } else {
+          _nextDueAmount = 0.0;
+        }
 
-// Handle nextPaymentDate
-final nextPaymentDateData = agreementData['nextPaymentDate'];
-if (nextPaymentDateData is String) {
-  _nextDueDate = nextPaymentDateData;
-} else if (nextPaymentDateData is Timestamp) {
-  final date = nextPaymentDateData.toDate();
-  _nextDueDate = '${date.month}/${date.day}/${date.year}';
-} else {
-  _nextDueDate = 'TBD';
-}
+        // Handle nextPaymentDate
+        final nextPaymentDateData = agreementData['nextPaymentDate'];
+        if (nextPaymentDateData is String) {
+          _nextDueDate = nextPaymentDateData;
+        } else if (nextPaymentDateData is Timestamp) {
+          final date = nextPaymentDateData.toDate();
+          _nextDueDate = '${date.month}/${date.day}/${date.year}';
+        } else {
+          _nextDueDate = 'TBD';
+        }
        
         _isLoading = false;
       });
@@ -124,6 +135,59 @@ if (nextPaymentDateData is String) {
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]},',
     );
+  }
+
+  // ADD: Function to handle custom payment navigation
+  Future<void> _proceedWithCustomPayment() async {
+    final customAmountText = _customAmountController.text.trim();
+    
+    if (customAmountText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a payment amount'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final customAmount = double.tryParse(customAmountText);
+    
+    if (customAmount == null || customAmount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid amount'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (customAmount > _remainingBalance) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Amount exceeds remaining balance of ₱${_formatNumber(_remainingBalance)}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Navigate to PaymentScreen with custom amount
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentScreen(
+          customAmount: customAmount,
+          agreementId: _agreementId,
+        ),
+      ),
+    );
+    
+    if (result == true) {
+      _customAmountController.clear();
+      _loadPaymentData();
+    }
   }
 
   @override
@@ -336,7 +400,80 @@ if (nextPaymentDateData is String) {
 
                             const SizedBox(height: 24),
 
-                            // PAY NOW BUTTON
+                            // MODIFIED: Payment Amount Input with Arrow Button
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Custom Payment Amount",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  TextField(
+                                    controller: _customAmountController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      prefixText: '₱ ',
+                                      hintText: 'Enter amount to advance payment',
+                                      // ADD: Suffix icon button
+                                      suffixIcon: IconButton(
+                                        icon: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.arrow_forward,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        onPressed: _proceedWithCustomPayment,
+                                        tooltip: 'Proceed to Payment',
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(color: Colors.blue.shade300),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Colors.blue, width: 2),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.blue.shade50,
+                                    ),
+                                    onSubmitted: (value) {
+                                      // Allow pressing Enter/Return to proceed
+                                      _proceedWithCustomPayment();
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Tip: Enter any amount up to ₱${_formatNumber(_remainingBalance)} to advance your payment',
+                                    style: TextStyle(
+                                      color: Colors.blue.shade700,
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // PAY NOW BUTTON (Next Due Amount)
                             SizedBox(
                               width: double.infinity,
                               height: 56,
@@ -354,7 +491,10 @@ if (nextPaymentDateData is String) {
                                         final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => const PaymentScreen(),
+                                            builder: (context) => PaymentScreen(
+                                              customAmount: _nextDueAmount,
+                                              agreementId: _agreementId,
+                                            ),
                                           ),
                                         );
                                         if (result == true) {
@@ -364,7 +504,7 @@ if (nextPaymentDateData is String) {
                                     : null,
                                 icon: const Icon(Icons.payment),
                                 label: Text(
-                                  "Pay Now - ₱${_formatNumber(_nextDueAmount)}",
+                                  "Pay Next Due - ₱${_formatNumber(_nextDueAmount)}",
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
